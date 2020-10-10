@@ -70,10 +70,18 @@
       </v-row>
       <v-row justify="center" v-if="rolSeleccionado">
         <v-col md="4">
-          <v-btn color="success" block>Enviar </v-btn>
+          <v-btn color="success" @click="enviar" block>Enviar </v-btn>
         </v-col>
       </v-row>
     </v-form>
+
+    <v-snackbar v-model="snackbar">
+      {{ mensaje }}     
+        <v-btn color="pink" text @click="snackbar = false">
+          Cerrar
+        </v-btn>     
+    </v-snackbar>
+    
   </v-container>
 </template>
 
@@ -82,6 +90,8 @@ export default {
   data() {
     return {
       formUsers: null,
+      mensaje: '',
+      snackbar: false,
       rol: ["Proveedor", "Usuario"],
       rolSeleccionado: null,
       camposGenerales: [],
@@ -134,6 +144,10 @@ export default {
         },
       ];
     },
+    enviar() {
+      this.mensaje = `El ${this.rolSeleccionado} fue registrado con exito`
+      this.snackbar = true
+    }
   },
 };
 </script>
