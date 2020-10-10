@@ -9,7 +9,7 @@
     <v-form v-model="formUsers" ref="formUsers">
       <!-- Seleccionar un rol -->
       <v-row justify="center">
-        <v-col cols="12" sm="4" class="mt-5">
+        <v-col sm="4" class="mt-5">
           <v-select
             :items="rol"
             @change="actualizarRol"
@@ -39,7 +39,7 @@
           <v-select
             :label="tipoId.label"
             :items="tipoId.items"
-            :v-model="tipoId.tipoSeleccionado"
+            v-model="tipoId.tipoSeleccionado"
             required
           ></v-select>
         </v-col>
@@ -76,17 +76,17 @@
     </v-form>
 
     <v-snackbar v-model="snackbar">
-      {{ mensaje }}     
-        <v-btn color="pink" text @click="snackbar = false">
-          Cerrar
-        </v-btn>     
+      {{ mensaje }}
+      <v-btn color="pink" text @click="snackbar = false"> Cerrar </v-btn>
     </v-snackbar>
-    
   </v-container>
 </template>
 
 <script>
 export default {
+  beforeMount() {
+    this.cargarUsuarios();
+  },
   data() {
     return {
       formUsers: null,
@@ -103,7 +103,7 @@ export default {
       tipoId: {
         label: "Tipo de Identificación",
         items: ["cedula", "pasaporte"],
-        tipoSeleccionado: null,
+        tipoSeleccionado: "",
       },
       /* Comprobar Campos */
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
@@ -111,6 +111,7 @@ export default {
         (v) => !!v || "El e-mail es requerido",
         (v) => /.+@.+/.test(v) || "El e-mail debe de ser valido",
       ],
+      usuarios: []
     };
   },
   methods: {
@@ -144,10 +145,40 @@ export default {
         },
       ];
     },
-    enviar() {
-      this.mensaje = `El ${this.rolSeleccionado} fue registrado con exito`
-      this.snackbar = true
+    cargarUsuarios() {
+      let url = "http://localhost:3002/proveedores";
+      this.$axios.get(url).then((response) => {
+        let data = response.data;
+        this.usuarios = data;
+      })
+    },
+    enviar() {      
+      /* Generamos el objeto usuario con los datos */
+      let url = "http://localhost:3002/proveedores";
+      const defaultUser = {
+          nombre : this.camposGenerales[0].dato,
+          apellido : this.camposGenerales[1].dato,
+          email : this.camposGenerales[2].dato,
+          password : this.camposGenerales[3].dato,
+          contacto : this.camposGenerales[4].dato
+        }
+        
+      if(this.rolSeleccionado === this.rol[0]) {
+        const user = {
+          ...defaultUser,
+          tipoId : this.tipoId.tipoSeleccionado,
+          id : this.camposProveedor[0].dato,
+          direccion : this.camposProveedor[1].dato,
+          descripcion : this.descripcion
+        }        
+        this.$axios.post(url, user).then((response) => {
+          this.cargarUsuarios();
+          this.mensaje = `El ${this.rolSeleccionado} fue registrado con exito`
+          this.snackbar = true
+        });    
+        console.log(this.usuarios)     
+      }
     }
-  },
-};
+  }
+}
 </script>
