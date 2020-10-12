@@ -1,4 +1,33 @@
 {
-  "proveedores": [],
-  "usuarios": []
+  "proveedores": [
+    {
+      "id": "001",
+      "tipoId": "cedula",
+      "nombre": "Saltin",
+      "apellido": "Noel",
+      "email": "noel@gmail.com",
+      "password": "123",
+      "contacto": "123345",
+      "direccion": "113111",
+      "descripcion": "hola ffefe sssmundo"
+    }
+  ],
+  "usuarios": [
+    {
+      "nombre": "Jose Pablo",
+      "apellido": "Romero",
+      "email": "jpablo9921@gmail.com",
+      "password": "123",
+      "contacto": "123",
+      "id": "0"
+    }
+  ],
+  "usuario-ingresado": [
+    {
+      "id": "0",
+      "rol": "usuario",
+      "nombre": "Jose Pablo",
+      "apellido": "Romero"
+    }
+  ]
 }

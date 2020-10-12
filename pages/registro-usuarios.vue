@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
 
-    <v-form v-model="formUsers" ref="formUsers">
+    <v-form v-model="formUsers" ref="formUsers" lazy-validation>
       <!-- Seleccionar un rol -->
       <v-row justify="center">
         <v-col sm="4" class="mt-5">
@@ -93,18 +93,21 @@
 
 <script>
 export default {
+  layout: 'blank',
+  beforeCreate() {
+    let url = "http://localhost:3002/usuario-ingresado";
+    this.$axios.get(url).then((response) => {
+      let data = response.data;
+      this.usuarioPrevio = data;
+    });
+  },
   beforeMount() {
     this.obtenerProveedores();
     this.obtenerUsuarios();
   },
-  beforeUpdate() {
-    try {
-      this.$refs.formUsers.validate();
-    } catch (error) {}
-  },
   data() {
     return {
-      formUsers: null,
+      formUsers: true,
       mensaje: "",
       snackbar: false,
       rol: ["Proveedor", "Usuario"],
@@ -128,6 +131,7 @@ export default {
       ],
       usuarios: [],
       proveedores: [],
+      usuarioPrevio: null
     };
   },
   methods: {
@@ -161,6 +165,9 @@ export default {
         },
       ];
     },
+    obtenerUsuarioRegistrado() {
+
+    },
     obtenerProveedores() {
       let url = "http://localhost:3002/proveedores";
       this.$axios.get(url).then((response) => {
@@ -175,11 +182,17 @@ export default {
         this.usuarios = data;
       });
     },
-    obtenerIdUsuario() {
-      let id = (
-        parseInt(this.usuarios[this.usuarios.length - 1].id) + 1
-      ).toString();
-      return id;
+    obtenerIdUsuario() { 
+      
+      if (this.usuarios.length !== 0) {
+        let id = (
+          parseInt(this.usuarios[this.usuarios.length - 1].id) + 1
+        ).toString();
+        return id;
+      } else {
+        return '0'
+      }
+      
     },
     limpiarCampos() {
       this.actualizarRol();
