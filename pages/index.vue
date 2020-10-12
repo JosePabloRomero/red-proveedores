@@ -63,15 +63,15 @@ s
 <script>
 export default {
   layout: "blank",
-  beforeMount() {
-    this.obtenerUsuarios();
-  },
   beforeCreate() {
-    let url = "http://localhost:3002/usuario-ingresado";
+    let url = "http://localhost:3002/usuario-ingresado";   
     this.$axios.get(url).then((response) => {
       let data = response.data;
-      this.usuarioPrevio = data;
+      this.usuarioPrevio = data
     });
+  },
+  beforeMount() {
+    this.obtenerUsuarios();
   },
   data() {
     return {
@@ -87,7 +87,7 @@ export default {
       mensaje: "",
       usuario: undefined,
       urlNuevaDireccion: "/",
-      usuarioPrevio: null,
+      usuarioPrevio: [],
       idUsuarioPrevio: "",
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
       emailRules: [
@@ -112,7 +112,7 @@ export default {
       this.$axios.get(url).then((response) => {
         let data = response.data;
         this.administradores = data;       
-      });
+      }); 
     },
     ingresarUsuario() {
       let url = "http://localhost:3002/usuario-ingresado";
@@ -130,11 +130,10 @@ export default {
           .then((response) => {});
         this.$axios.post(url, user).then((response) => {});
       }
-
       this.$router.push(this.urlNuevaDireccion);
     },
     obtenerUsuarioIngresado() {
-      if (this.usuarioPrevio == null) {
+      if (this.usuarioPrevio.length === 0) {
         return true;
       } else {
         this.idUsuarioPrevio = this.usuarioPrevio[0].id;        
@@ -152,12 +151,12 @@ export default {
             break;
           case this.rol[1]:
             this.usuario = this.usuarios.find((x) => x.email === this.email);
-            this.urlNuevaDireccion = "/inicio-proveedores";
+            this.urlNuevaDireccion = "/inicio-usuarios";
             break;
           case this.rol[2]:
-            this.usuario = this.this.usuarios.find((x) => x.email === this.email);
+            this.usuario = this.administradores.find((x) => x.email === this.email);
             this.urlNuevaDireccion = '/inicio-administradores'
-            break;
+            break; 
           default:
             break;
         }
