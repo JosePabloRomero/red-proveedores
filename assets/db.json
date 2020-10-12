@@ -29,5 +29,14 @@
       "nombre": "Jose Pablo",
       "apellido": "Romero"
     }
+  ],
+  "productos": [
+    {
+      "id": "01",
+      "nombre": "Martillo",
+      "categoria": "Ferreteria",
+      "precio": "3000",
+      "descripcion": "jeej"
+    }
   ]
 }
