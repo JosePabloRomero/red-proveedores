@@ -47,5 +47,35 @@
       "precio": "3000",
       "descripcion": "jeej"
     }
+  ],
+  "ventas": [
+    {
+      "idCliente": "01",
+      "idProveedor": "02",
+      "fecha": "12/10/2020",
+      "estado": "En progreso",
+      "id": 1
+    },
+    {
+      "idCliente": "02",
+      "idProveedor": "03",
+      "fecha": "12/10/2020",
+      "estado": "Finalizada",
+      "id": 2
+    },
+    {
+      "idCliente": "03",
+      "idProveedor": "09",
+      "fecha": "12/10/2020",
+      "estado": "Finalizada",
+      "id": 3
+    },
+    {
+      "idCliente": "09",
+      "idProveedor": "001",
+      "fecha": "12/10/2020",
+      "estado": "En progreso",
+      "id": 4
+    }
   ]
 }
