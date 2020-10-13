@@ -1,20 +1,20 @@
 {
   "proveedores": [
     {
-      "id": "001",
-      "tipoId": "cedula",
       "nombre": "Saltin",
       "apellido": "Noel",
       "email": "noel@gmail.com",
       "password": "123",
       "contacto": "123345",
+      "tipoId": "cedula",
+      "id": "001",
       "direccion": "113111",
       "descripcion": "hola ffefe sssmundo"
     }
   ],
   "usuarios": [
     {
-      "nombre": "Jose Pablo",
+      "nombre": "Jose Pabloo",
       "apellido": "Romero",
       "email": "jpablo9921@gmail.com",
       "password": "123",
@@ -31,14 +31,7 @@
       "password": "123"
     }
   ],
-  "usuario-ingresado": [
-    {
-      "id": "001",
-      "rol": "proveedor",
-      "nombre": "Saltin",
-      "apellido": "Noel"
-    }
-  ],
+  "usuario-ingresado": [],
   "productos": [
     {
       "id": "01",
@@ -55,34 +48,6 @@
       "fecha": "12/10/2020",
       "estado": "En progreso",
       "id": 1
-    },
-    {
-      "idCliente": "02",
-      "idProveedor": "03",
-      "fecha": "12/10/2020",
-      "estado": "Finalizada",
-      "id": 2
-    },
-    {
-      "idCliente": "03",
-      "idProveedor": "09",
-      "fecha": "12/10/2020",
-      "estado": "Finalizada",
-      "id": 3
-    },
-    {
-      "idCliente": "09",
-      "idProveedor": "001",
-      "fecha": "12/10/2020",
-      "estado": "En progreso",
-      "id": 4
-    },
-    {
-      "idCliente": "01",
-      "idProveedor": "02",
-      "fecha": "12/12/2020",
-      "estado": "Finalizada",
-      "id": 5
     }
   ]
 }

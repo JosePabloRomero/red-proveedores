@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col class="primary" align="center">
-        <h1>Formulario Registro de Usuarios</h1>
+        <h1>CRUD Usuarios</h1>
       </v-col>
     </v-row>
 
@@ -14,6 +14,7 @@
             :items="rol"
             @change="actualizarRol"
             v-model="rolSeleccionado"
+            :disabled="editing"
             label="Seleccione un rol"
             outlined
           ></v-select>
@@ -57,6 +58,7 @@
           <v-text-field
             :label="item.label"
             v-model="item.dato"
+            :diabled="editing && rolSeleccionado === rol[0]"
             required
             :rules="fieldRequired"
           >
@@ -79,10 +81,30 @@
       </v-row>
       <v-row justify="center" v-if="rolSeleccionado">
         <v-col md="4">
-          <v-btn color="success" @click="enviar" block>Enviar </v-btn>
+          <v-btn color="success" @click="enviar" v-if="!editing" block
+            >Enviar
+          </v-btn>
+        </v-col>
+        <v-col md="4">
+          <v-btn color="warning" @click="editUser" v-if="editing" block
+            >Actualizar</v-btn
+          >
         </v-col>
       </v-row>
     </v-form>
+
+    <v-data-table
+      :headers="headers"
+      :items="usuariosBuscados"
+      :items-per-page="5"
+      class="elevation-1"
+      v-if="rolSeleccionado"
+    >
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon small class="mr-2" @click="loadUser(item)"> mdi-pencil </v-icon>
+        <v-icon small @click="deleteUser(item)"> mdi-delete </v-icon>
+      </template>
+    </v-data-table>
 
     <v-snackbar v-model="snackbar">
       {{ mensaje }}
@@ -93,26 +115,18 @@
 
 <script>
 export default {
-  layout:  'administradores',
-  beforeCreate() {
-    let url = "http://localhost:3002/usuario-ingresado";
-    this.$axios.get(url).then((response) => {
-      let data = response.data;
-      this.usuarioPrevio = data;
-    }).catch(error => {
-      console.log(error)
-    })
-  },
+  layout: "administradores",
   beforeMount() {
     this.obtenerProveedores();
     this.obtenerUsuarios();
-  },
+    this.obtenerAdministradores();
+  }, 
   data() {
     return {
       formUsers: true,
       mensaje: "",
       snackbar: false,
-      rol: ["Proveedor", "Usuario"],
+      rol: ["Proveedor", "Usuario", "Administrador"],
       rolSeleccionado: null,
       camposGenerales: [],
       camposProveedor: [
@@ -133,7 +147,17 @@ export default {
       ],
       usuarios: [],
       proveedores: [],
-      usuarioPrevio: null
+      administradores: [],
+      usuariosBuscados: [],
+      headers: [
+        { text: "Identificación", value: "id" },
+        { text: "Nombre", value: "nombre" },
+        { text: "Email", value: "email" },
+        { text: "Actions", value: "actions" },
+      ],
+      editing: false,
+      idBuscado: "",
+      urlObjetivo: "",
     };
   },
   methods: {
@@ -166,9 +190,22 @@ export default {
           type: "text",
         },
       ];
-    },
-    obtenerUsuarioRegistrado() {
-
+      switch (this.rolSeleccionado) {
+        case this.rol[0]:
+          this.usuariosBuscados = this.proveedores;
+          this.urlObjetivo = "http://localhost:3002/proveedores";
+          break;
+        case this.rol[1]:
+          this.usuariosBuscados = this.usuarios;
+          this.urlObjetivo = "http://localhost:3002/usuarios";
+          break;
+        case this.rol[2]:
+          this.usuariosBuscados = this.administradores;
+          this.urlObjetivo = "http://localhost:3002/administradores";
+          break;
+        default:
+          break;
+      }
     },
     obtenerProveedores() {
       let url = "http://localhost:3002/proveedores";
@@ -184,17 +221,22 @@ export default {
         this.usuarios = data;
       });
     },
-    obtenerIdUsuario() { 
-      
+    obtenerAdministradores() {
+      let url = "http://localhost:3002/administradores";
+      this.$axios.get(url).then((response) => {
+        let data = response.data;
+        this.administradores = data;
+      });
+    },
+    obtenerIdUsuario() {
       if (this.usuarios.length !== 0) {
         let id = (
           parseInt(this.usuarios[this.usuarios.length - 1].id) + 1
         ).toString();
         return id;
       } else {
-        return '0'
+        return "0";
       }
-      
     },
     limpiarCampos() {
       this.actualizarRol();
@@ -203,6 +245,67 @@ export default {
       this.camposProveedor.forEach((element) => {
         element.dato = "";
       });
+      this.idBuscado = "";
+    },
+    loadUser(user) {
+      this.camposGenerales[0].dato = user.nombre;
+      this.camposGenerales[1].dato = user.apellido;
+      this.camposGenerales[2].dato = user.email;
+      this.camposGenerales[3].dato = user.password;
+      this.camposGenerales[4].dato = user.contacto;
+      this.idBuscado = user.id;
+      if (this.rolSeleccionado === this.rol[0]) {
+        this.tipoId.tipoSeleccionado = user.tipoId;
+        this.camposProveedor[0].dato = user.id;
+        this.camposProveedor[1].dato = user.direccion;
+        this.descripcion = user.descripcion;
+      }
+      this.editing = true;
+    },
+    editUser() {
+      if (this.$refs.formUsers.validate() && this.formUsers) {
+        // Encontrar la posición que esta el usuario en el array
+        let existIndex = this.usuariosBuscados.findIndex(
+          (x) => x.id == this.idBuscado
+        );
+        // Validación si la identificación de una persona ya existe en el array
+        if (existIndex > -1) {
+          console.log(
+            "La persona existe y esta en la posición del array",
+            existIndex
+          );
+          //Modificar la persona del array
+          let url = `${this.urlObjetivo}/${this.idBuscado}`;
+          let user = {
+            nombre: this.camposGenerales[0].dato,
+            apellido: this.camposGenerales[1].dato,
+            email: this.camposGenerales[2].dato,
+            password: this.camposGenerales[3].dato,
+            contacto: this.camposGenerales[4].dato,
+          };
+          if(this.rolSeleccionado === this.rol[0]) {
+            user = {
+              ...user,
+              tipoId: this.tipoId.tipoSeleccionado,
+              id: this.camposProveedor[0].dato,
+              direccion: this.camposProveedor[1].dato,
+              descripcion: this.descripcion,
+            };
+          }          
+          this.$axios.put(url,user).then((response) => {
+            this.editing = false;
+            this.obtenerProveedores();
+            this.obtenerUsuarios();
+            this.obtenerAdministradores();
+            this.limpiarCampos();
+            this.mensaje = `El ${this.rolSeleccionado} fue actualizado con exito`;
+            this.snackbar = true;
+          });
+        } else {
+          this.mensaje = `La persona no existe en la tabla`;
+          this.snackbar = true;
+        }
+      }
     },
     enviar() {
       if (this.$refs.formUsers.validate() && this.formUsers) {

@@ -93,15 +93,18 @@
 
 <script>
 export default {
-  layout: 'default',
+  layout: "default",
   beforeCreate() {
     let url = "http://localhost:3002/usuario-ingresado";
-    this.$axios.get(url).then((response) => {
-      let data = response.data;
-      this.usuarioPrevio = data;
-    }).catch(error => {
-      console.log(error)
-    })
+    this.$axios
+      .get(url)
+      .then((response) => {
+        let data = response.data;
+        this.usuarioPrevio = data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   beforeMount() {
     this.obtenerProveedores();
@@ -133,7 +136,7 @@ export default {
       ],
       usuarios: [],
       proveedores: [],
-      usuarioPrevio: null
+      usuarioPrevio: null,
     };
   },
   methods: {
@@ -167,9 +170,7 @@ export default {
         },
       ];
     },
-    obtenerUsuarioRegistrado() {
-
-    },
+    obtenerUsuarioRegistrado() {},
     obtenerProveedores() {
       let url = "http://localhost:3002/proveedores";
       this.$axios.get(url).then((response) => {
@@ -184,17 +185,15 @@ export default {
         this.usuarios = data;
       });
     },
-    obtenerIdUsuario() { 
-      
+    obtenerIdUsuario() {
       if (this.usuarios.length !== 0) {
         let id = (
           parseInt(this.usuarios[this.usuarios.length - 1].id) + 1
         ).toString();
         return id;
       } else {
-        return '0'
+        return "0";
       }
-      
     },
     limpiarCampos() {
       this.actualizarRol();
@@ -252,7 +251,8 @@ export default {
             this.snackbar = true;
             this.limpiarCampos();
           });
-        }
+        }        
+        this.$router.push('/');
       }
     },
   },

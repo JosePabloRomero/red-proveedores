@@ -102,24 +102,9 @@ export default {
           to: '/administradores/inicio-administradores'
         },
         {
-          icon: 'mdi-account-plus',
-          title: 'Registrar Usuario',
+          icon: 'mdi-account-edit-outline',
+          title: 'CRUD Usuarios',
           to: '/administradores/registro-usuarios'
-        },
-        {
-          icon: 'mdi-account-cancel',
-          title: 'Eliminar Usuario',
-          to: '/'
-        },
-        {
-          icon: 'mdi-account-edit',
-          title: 'Editar Usuario',
-          to: '/'
-        },
-        {
-          icon: 'mdi-account-search',
-          title: 'Buscar Usuario',
-          to: '/'
         }        
       ],
       miniVariant: false,
