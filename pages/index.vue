@@ -44,7 +44,7 @@
           <v-card-text class="text--primary mt-0">
             <div>
               ¿Aun no tienes una cuenta?
-              <v-btn color="orange" to="/registro-usuarios" text>
+              <v-btn color="orange" to="/usuarios/registro-usuarios" text>
                 Registrate
               </v-btn>
             </div>
@@ -59,19 +59,25 @@
     </v-snackbar>
   </v-container>
 </template>
-s
+
 <script>
 export default {
   layout: "blank",
-  beforeCreate() {
-    let url = "http://localhost:3002/usuario-ingresado";   
-    this.$axios.get(url).then((response) => {
-      let data = response.data;
-      this.usuarioPrevio = data
-    });
-  },
   beforeMount() {
     this.obtenerUsuarios();
+    let url = "http://localhost:3002/usuario-ingresado";   
+    this.$axios.get(url).then((response) => {
+      let data = response.data;      
+      this.usuarioPrevio = data
+      if(data && data.length !== 0) {
+          this.idUsuarioPrevio = data[0].id      
+          this.$axios
+          .delete(url + `/${this.idUsuarioPrevio}`)
+          .then((response) => {});
+      }      
+    }).catch(error => {
+      console.log(error)
+    })
   },
   data() {
     return {
@@ -87,7 +93,7 @@ export default {
       mensaje: "",
       usuario: undefined,
       urlNuevaDireccion: "/",
-      usuarioPrevio: [],
+      usuarioPrevio: undefined,
       idUsuarioPrevio: "",
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
       emailRules: [
@@ -121,24 +127,9 @@ export default {
         rol: this.rolSeleccionado.toLowerCase(),
         nombre: this.usuario.nombre,
         apellido: this.usuario.apellido,
-      };
-      if (this.obtenerUsuarioIngresado()) {
-        this.$axios.post(url, user).then((response) => {});
-      } else {
-        this.$axios
-          .delete(url + `/${this.idUsuarioPrevio}`)
-          .then((response) => {});
-        this.$axios.post(url, user).then((response) => {});
-      }
-      this.$router.push(this.urlNuevaDireccion);
-    },
-    obtenerUsuarioIngresado() {
-      if (this.usuarioPrevio.length === 0) {
-        return true;
-      } else {
-        this.idUsuarioPrevio = this.usuarioPrevio[0].id;        
-        return false;
-      }
+      };     
+      this.$axios.post(url, user).then((response) => {});
+      this.$router.push(this.urlNuevaDireccion); 
     },
     ingresar() {
       if (this.$refs.formLogin.validate() && this.formLogin) {
@@ -147,15 +138,15 @@ export default {
         switch (this.rolSeleccionado) {
           case this.rol[0]:
             this.usuario = this.proveedores.find((x) => x.email === this.email);
-            this.urlNuevaDireccion = "/inicio-usuarios";
+            this.urlNuevaDireccion = "/proveedores/inicio-proveedores";
             break;
           case this.rol[1]:
             this.usuario = this.usuarios.find((x) => x.email === this.email);
-            this.urlNuevaDireccion = "/inicio-usuarios";
+            this.urlNuevaDireccion = "/usuarios/inicio-usuarios";
             break;
           case this.rol[2]:
             this.usuario = this.administradores.find((x) => x.email === this.email);
-            this.urlNuevaDireccion = '/inicio-administradores'
+            this.urlNuevaDireccion = '/administradores/inicio-administradores'
             break; 
           default:
             break;

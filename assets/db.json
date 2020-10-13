@@ -34,9 +34,9 @@
   "usuario-ingresado": [
     {
       "id": "0",
-      "rol": "usuario",
-      "nombre": "Jose Pablo",
-      "apellido": "Romero"
+      "rol": "administrador",
+      "nombre": "admin",
+      "apellido": "1"
     }
   ],
   "productos": [

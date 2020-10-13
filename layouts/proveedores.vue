@@ -99,14 +99,13 @@ export default {
         {
           icon: 'mdi-apps',
           title: 'Inicio',
-          to: '/'
+          to: '/proveedores/inicio-proveedores'
         },
         {
           icon: 'mdi-chart-bubble',
           title: 'Buscar',
           to: '/'
-        }
-        
+        }        
       ],
       miniVariant: false,
       right: true,

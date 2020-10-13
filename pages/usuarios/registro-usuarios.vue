@@ -93,13 +93,15 @@
 
 <script>
 export default {
-  layout: 'blank',
+  layout: 'default',
   beforeCreate() {
     let url = "http://localhost:3002/usuario-ingresado";
     this.$axios.get(url).then((response) => {
       let data = response.data;
       this.usuarioPrevio = data;
-    });
+    }).catch(error => {
+      console.log(error)
+    })
   },
   beforeMount() {
     this.obtenerProveedores();

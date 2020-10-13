@@ -100,12 +100,12 @@ export default {
         {
           icon: 'mdi-apps',
           title: 'Inicio',
-          to: '/inicio-usuarios'
+          to: '/usuarios/inicio-usuarios'
         },
         {
           icon: 'mdi-account-search',
           title: 'Buscar Proveedor',
-          to: '/'
+          to: '/usuarios/inicio-usuarios'
         }
         
       ],

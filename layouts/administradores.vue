@@ -99,12 +99,12 @@ export default {
         {
           icon: 'mdi-apps',
           title: 'Inicio',
-          to: '/'
+          to: '/administradores/inicio-administradores'
         },
         {
           icon: 'mdi-account-plus',
           title: 'Registrar Usuario',
-          to: '/registro-usuarios'
+          to: '/administradores/registro-usuarios'
         },
         {
           icon: 'mdi-account-cancel',
@@ -120,8 +120,7 @@ export default {
           icon: 'mdi-account-search',
           title: 'Buscar Usuario',
           to: '/'
-        },
-        
+        }        
       ],
       miniVariant: false,
       right: true,
