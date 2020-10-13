@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
 
-    <v-form v-model="formVentas" ref="formVentas">
+    <v-form v-model="formVentas" ref="formVentas" lazy-validation>
       <v-row>
         <v-col sm="4" v-for="(item, index) in camposGenerales" :key="index">
           <v-text-field
@@ -48,12 +48,13 @@
 
 <script>
 export default {
+  layout: "proveedores",
   beforeMount() {
     this.cargarVentas();
   },
   data() {
     return {
-      formVentas: null,
+      formVentas: true,
       mensaje: '',
       snackbar: false,
       estado: ["En progreso", "Finalizada"],
@@ -99,8 +100,15 @@ export default {
         this.cargarVentas();
         this.mensaje = `La venta fue registrada con éxito`
         this.snackbar = true
+        this.limpiarCampos();
       })
       console.log(this.ventas);
+    },
+    limpiarCampos() {
+      this.estadoSeleccionado = "";
+      this.camposGenerales.forEach((element) => {
+        element.dato = "";  
+      });
     } 
   },
 };
