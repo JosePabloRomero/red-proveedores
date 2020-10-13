@@ -2,11 +2,11 @@
   <v-container>
     <v-row>
       <v-col class="primary" align="center">
-        <h1>Registro de Ventas</h1>
+        <h1>Formulario Registro de Productos</h1>
       </v-col>
     </v-row>
 
-    <v-form v-model="formVentas" ref="formVentas" lazy-validation>
+    <v-form v-model="formProducts" ref="formProducts">
       <v-row>
         <v-col sm="4" v-for="(item, index) in camposGenerales" :key="index">
           <v-text-field
@@ -19,15 +19,17 @@
         </v-col>
 
         <v-col md="6">
-          <v-select
-            :items="estado"
-            @change="actualizarEstado"
-            v-model="estadoSeleccionado"
-            label="Seleccione el estado de la venta"
-            outlined
-           ></v-select> 
+          <v-textarea
+            label="Descripción"
+            auto-grow
+            rows="2"
+            row-height="10"
+            :rules="fieldRequired"
+            required
+            v-model="descripcion"
+          >
+          </v-textarea>
         </v-col>
-
       </v-row>
       <v-row justify="center">
         <v-col md="4">
@@ -48,67 +50,65 @@
 
 <script>
 export default {
-  layout: "proveedores",
+  layout: 'proveedores',
   beforeMount() {
-    this.cargarVentas();
+    this.cargarProductos();
   },
   data() {
     return {
-      formVentas: true,
+      formProducts: null,
       mensaje: '',
       snackbar: false,
-      estado: ["En progreso", "Finalizada"],
-      estadoSeleccionado: null,
       camposGenerales: [
         {
-          label: `ID del Cliente`,
+          label: `ID del producto`,
           dato: "",
           type: "text",
         },
         {
-          label: `Id del Proveedor`,
+          label: `Nombre del producto`,
           dato: "",
           type: "text",
         },
         {
-          label: `Fecha de la venta`,
+          label: `Categoria del producto`,
+          dato: "",
+          type: "text",
+        },
+        {
+          label: `Precio del producto`,
           dato: "",
           type: "text",
         }
       ],
+      descripcion: null,
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
-      ventas: []
+      productos: []
     };
   },
   methods: {
-    cargarVentas() {
-      let url ="http://localhost:3002/ventas";
+    cargarProductos() {
+      let url ="http://localhost:3002/productos";
       this.$axios.get(url).then((response) => {
         let data = response.data;
-        this.ventas = data;
+        this.productos = data;
       })
     },
     enviar() {
-      let url = "http://localhost:3002/ventas";
-      const ventas = {
-        idCliente : this.camposGenerales[0].dato,
-        idProveedor : this.camposGenerales[1].dato,
-        fecha : this.camposGenerales[2].dato,
-        estado: this.estadoSeleccionado
+      let url = "http://localhost:3002/productos";
+      const products = {
+        id : this.camposGenerales[0].dato,
+        nombre : this.camposGenerales[1].dato,
+        categoria : this.camposGenerales[2].dato,
+        precio : this.camposGenerales[3].dato,
+        descripcion : this.descripcion
       }
-      this.$axios.post(url, ventas).then((response) => {
-        this.cargarVentas();
-        this.mensaje = `La venta fue registrada con éxito`
+      this.$axios.post(url, products).then((response) => {
+        this.cargarProductos();
+        this.mensaje = `El producto fue registrado con éxito`
         this.snackbar = true
-        this.limpiarCampos();
       })
-      console.log(this.ventas);
-    },
-    limpiarCampos() {
-      this.estadoSeleccionado = "";
-      this.camposGenerales.forEach((element) => {
-        element.dato = "";  
-      });
+      console.log(this.productos);
     } 
   },
 };

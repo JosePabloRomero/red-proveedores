@@ -102,15 +102,20 @@ export default {
           to: '/proveedores/inicio-proveedores'
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Buscar',
-          to: '/'
-        }        
+          icon: 'mdi-point-of-sale',
+          title: 'Ventas',
+          to: '/proveedores/ventas'
+        },        
+        {
+          icon: 'mdi-store-outline',
+          title: 'Agregar Productos',
+          to: '/proveedores/registro-productos'
+        },        
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Red Proveedores - Administrador'
+      title: 'Red Proveedores - Proveedores'
     }
   }
 }

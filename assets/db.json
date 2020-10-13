@@ -33,10 +33,10 @@
   ],
   "usuario-ingresado": [
     {
-      "id": "0",
-      "rol": "administrador",
-      "nombre": "admin",
-      "apellido": "1"
+      "id": "001",
+      "rol": "proveedor",
+      "nombre": "Saltin",
+      "apellido": "Noel"
     }
   ],
   "productos": [
@@ -76,6 +76,13 @@
       "fecha": "12/10/2020",
       "estado": "En progreso",
       "id": 4
+    },
+    {
+      "idCliente": "01",
+      "idProveedor": "02",
+      "fecha": "12/12/2020",
+      "estado": "Finalizada",
+      "id": 5
     }
   ]
 }
