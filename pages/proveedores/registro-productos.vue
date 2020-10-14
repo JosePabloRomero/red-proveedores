@@ -34,9 +34,22 @@
       <v-row justify="center">
         <v-col md="4">
           <v-btn color="success" @click="enviar" block>Enviar </v-btn>
+          <v-btn color="success" @click="editarProductos" block>Editar </v-btn>
         </v-col>
       </v-row>
     </v-form>
+
+    <v-data-table
+      :headers="headers"
+      :items="productos"
+      :items-per-page="5"
+      class="elevation-1"
+    >
+    <template v-slot:[`item.actions`]="{ item }">
+        <v-icon small class="mr-2" @click="loadProduct(item)"> mdi-pencil </v-icon>
+        <v-icon small @click="deleteUser(item)"> mdi-delete </v-icon>
+      </template>
+    </v-data-table>
 
     <v-snackbar v-model="snackbar">
       {{ mensaje }}     
@@ -59,6 +72,13 @@ export default {
       formProducts: null,
       mensaje: '',
       snackbar: false,
+      headers: [
+        {text: "Identificación", value: "id"},
+        {text: "Nombre", value: "nombre"},
+        {text: "Categoria", value: "categoria"},
+        {text: "Precio", value: "precio"},
+        { text: "Actions", value: "actions" },
+      ],
       camposGenerales: [
         {
           label: `ID del producto`,
@@ -83,7 +103,8 @@ export default {
       ],
       descripcion: null,
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
-      productos: []
+      productos: [],
+      editing : false,
     };
   },
   methods: {
@@ -93,6 +114,55 @@ export default {
         let data = response.data;
         this.productos = data;
       })
+    },
+    loadProduct(product) {
+      this.camposGenerales[0].dato = product.id;
+      this.camposGenerales[1].dato = product.nombre;
+      this.camposGenerales[2].dato = product.categoria;
+      this.camposGenerales[3].dato = product.precio;
+      this.descripcion = product.descripcion;
+      this.editing = true;
+      /* this.product = Object.assign({}, product);
+      this.editing = true; */
+    },
+    loadProducts() {
+      let url = "http://localhost:3002/productos/";
+      this.$axios.get(url).then((response) => {
+        let data = response.data;
+        this.productos = data;
+      });
+    },
+    editarProductos() {
+      if (this.$refs.formProducts.validate() && this.formProducts) {
+        let existIndex = this.productos.findIndex((x) => x.id == this.camposGenerales[0].dato);
+        if(existIndex > -1) {
+          let url = " http://localhost:3002/productos/" + this.camposGenerales[0].dato;
+          let product = {
+            id : this.camposGenerales[0].dato,
+            nombre: this.camposGenerales[1].dato,
+            categoria: this.camposGenerales[2].dato,
+            precio: this.camposGenerales[3].dato,
+            descripcion: this.descripcion,
+          }
+          console.log(url);
+          console.log(product);
+          this.$axios.put(url, product).then((response) => {
+            this.editing = false;
+            this.$swal.fire(
+              "Modificado.",
+              "El producto ha sido modificada correctamente.!",
+              "success"
+            );
+            this.loadProducts();
+          });
+        } else {
+            this.$swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "El producto NO existe en la tabla.",
+          });
+        }
+      }
     },
     enviar() {
       let url = "http://localhost:3002/productos";

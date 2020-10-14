@@ -31,14 +31,28 @@
       "password": "123"
     }
   ],
-  "usuario-ingresado": [],
+  "usuario-ingresado": [
+    {
+      "id": "001",
+      "rol": "proveedor",
+      "nombre": "Saltin",
+      "apellido": "Noel"
+    }
+  ],
   "productos": [
     {
       "id": "01",
       "nombre": "Martillo",
       "categoria": "Ferreteria",
-      "precio": "3000",
+      "precio": "3100",
       "descripcion": "jeej"
+    },
+    {
+      "id": "02",
+      "nombre": "Leche",
+      "categoria": "Supermercado",
+      "precio": "2500",
+      "descripcion": "Jeje"
     }
   ],
   "ventas": [
@@ -48,6 +62,13 @@
       "fecha": "12/10/2020",
       "estado": "En progreso",
       "id": 1
+    },
+    {
+      "idCliente": "01",
+      "idProveedor": "03",
+      "fecha": "13/10/2020",
+      "estado": "En progreso",
+      "id": 2
     }
   ]
 }
