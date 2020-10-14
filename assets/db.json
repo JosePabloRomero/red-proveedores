@@ -31,7 +31,14 @@
       "password": "123"
     }
   ],
-  "usuario-ingresado": [],
+  "usuario-ingresado": [
+    {
+      "id": "001",
+      "rol": "proveedor",
+      "nombre": "Saltin",
+      "apellido": "Noel"
+    }
+  ],
   "productos": [
     {
       "id": "01",
@@ -48,6 +55,13 @@
       "fecha": "12/10/2020",
       "estado": "En progreso",
       "id": 1
+    },
+    {
+      "idCliente": "04",
+      "idProveedor": "222",
+      "fecha": "14/10/2020",
+      "estado": "Finalizada",
+      "id": 3
     }
   ]
 }
