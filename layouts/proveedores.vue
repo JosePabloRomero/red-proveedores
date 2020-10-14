@@ -50,6 +50,7 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <v-btn color="warning" to="/">Salir</v-btn>
       <v-btn
         icon
         @click.stop="rightDrawer = !rightDrawer"
