@@ -1,0 +1,67 @@
+{
+  "proveedores": [
+    {
+      "nombre": "Saltin",
+      "apellido": "Noel",
+      "email": "noel@gmail.com",
+      "password": "123",
+      "contacto": "123345",
+      "tipoId": "cedula",
+      "id": "001",
+      "direccion": "113111",
+      "descripcion": "hola ffefe sssmundo"
+    }
+  ],
+  "usuarios": [
+    {
+      "nombre": "Jose Pabloo",
+      "apellido": "Romero",
+      "email": "jpablo9921@gmail.com",
+      "password": "123",
+      "contacto": "123",
+      "id": "0"
+    }
+  ],
+  "administradores": [
+    {
+      "id": "0",
+      "nombre": "admin",
+      "apellido": "1",
+      "email": "admin@gmail.com",
+      "password": "123"
+    }
+  ],
+  "usuario-ingresado": [
+    {
+      "id": "001",
+      "rol": "proveedor",
+      "nombre": "Saltin",
+      "apellido": "Noel"
+    }
+  ],
+  "productos": [
+    {
+      "id": "01",
+      "nombre": "Martillo",
+      "categoria": "Ferreteria",
+      "precio": "3500",
+      "descripcion": "jeej"
+    }
+  ],
+  "ventas": [
+    {
+      "idCliente": "01",
+      "idProveedor": "02",
+      "fecha": "12/10/2020",
+      "estado": "En progreso",
+      "id": 1
+    },
+    {
+      "idCliente": "04",
+      "idProveedor": "222",
+      "fecha": "14/10/2020",
+      "estado": "Finalizada",
+      "id": 3
+    }
+  ]
+}

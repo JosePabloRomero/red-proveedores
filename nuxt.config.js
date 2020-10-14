@@ -33,10 +33,7 @@ export default {
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
-  modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
-  ],
+  modules: ['nuxt-sweetalert2', "@nuxtjs/axios"],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
@@ -54,13 +51,16 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          success: colors.green.accent3          
         }
       }
     }
   },
-
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+  },
+  server: {
+    port: 3001, // default: 3000
+    host: 'localhost' // default: localhost
   }
 }
