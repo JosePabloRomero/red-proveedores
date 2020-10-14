@@ -15,6 +15,7 @@
             :rules="fieldRequired"
             :type="item.type"
             required
+            :disabled="item.disabled"
           ></v-text-field>
         </v-col>
 
@@ -33,8 +34,8 @@
       </v-row>
       <v-row justify="center">
         <v-col md="4">
-          <v-btn color="success" @click="enviar" block>Enviar </v-btn>
-          <v-btn color="success" @click="editarProductos" block>Editar </v-btn>
+          <v-btn color="success" @click="enviar" block v-if="!editing">Enviar </v-btn>
+          <v-btn color="success" @click="editarProductos" block v-if="editing">Editar </v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -47,7 +48,7 @@
     >
     <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="loadProduct(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="deleteUser(item)"> mdi-delete </v-icon>
+        <v-icon small @click="deleteProduct(item)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
 
@@ -84,21 +85,25 @@ export default {
           label: `ID del producto`,
           dato: "",
           type: "text",
+          disabled: false,
         },
         {
           label: `Nombre del producto`,
           dato: "",
           type: "text",
+          disabled: false,
         },
         {
           label: `Categoria del producto`,
           dato: "",
           type: "text",
+          disabled: false,
         },
         {
           label: `Precio del producto`,
           dato: "",
           type: "text",
+          disabled: false,
         }
       ],
       descripcion: null,
@@ -122,6 +127,7 @@ export default {
       this.camposGenerales[3].dato = product.precio;
       this.descripcion = product.descripcion;
       this.editing = true;
+      this.camposGenerales[0].disabled = true;
       /* this.product = Object.assign({}, product);
       this.editing = true; */
     },
@@ -136,7 +142,7 @@ export default {
       if (this.$refs.formProducts.validate() && this.formProducts) {
         let existIndex = this.productos.findIndex((x) => x.id == this.camposGenerales[0].dato);
         if(existIndex > -1) {
-          let url = " http://localhost:3002/productos/" + this.camposGenerales[0].dato;
+          let url = "http://localhost:3002/productos/" + this.camposGenerales[0].dato;
           let product = {
             id : this.camposGenerales[0].dato,
             nombre: this.camposGenerales[1].dato,
@@ -162,10 +168,12 @@ export default {
             text: "El producto NO existe en la tabla.",
           });
         }
+        this.camposGenerales[0].disabled = false;
+        this.limpiarCampos();
       }
     },
     enviar() {
-      let url = "http://localhost:3002/productos";
+      let url = "http://localhost:3002/productos/";
       const products = {
         id : this.camposGenerales[0].dato,
         nombre : this.camposGenerales[1].dato,
@@ -179,7 +187,51 @@ export default {
         this.snackbar = true
       })
       console.log(this.productos);
-    } 
+      this.limpiarCampos();
+    },
+    limpiarCampos() {
+      this.estadoSeleccionado = "";
+      this.camposGenerales.forEach((element) => {
+        element.dato = "";
+          
+      });
+      this.descripcion = "";
+    },
+    deleteProduct(producto) {
+      let existIndex = this.productos.findIndex((x) => x.id == producto.id);
+      if (existIndex > -1) {
+        this.$swal
+          .fire({
+            title: "Desea eliminar el producto?",
+            text: "Este cambio no se puede revertir.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminar",
+            cancelButtonText: "Cancelar",
+          })
+          .then((result) => {
+            if (result.value) {
+              let url = "http://localhost:3002/productos/" + producto.id;
+              this.$axios.delete(url).then((response) => {
+                this.$swal.fire(
+                  "Eliminado.",
+                  "El producto ha sido eliminada correctamente.!",
+                  "success"
+                );
+                this.cargarProductos();
+              });
+            }
+          });
+      } else {
+        this.$swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "El producto NO existe en la tabla.",
+        });
+      }
+    },
   },
 };
 </script>
