@@ -80,16 +80,20 @@
         </v-col>
       </v-row>
       <v-row justify="center" v-if="rolSeleccionado">
-        <v-col md="4">
-          <v-btn color="success" @click="enviar" v-if="!editing" block
-            >Enviar
-          </v-btn>
-        </v-col>
-        <v-col md="4">
-          <v-btn color="warning" @click="editUser" v-if="editing" block
-            >Actualizar</v-btn
-          >
-        </v-col>
+        <v-row v-if="!editing" justify="center">
+          <v-col md="4" >
+            <v-btn color="success" @click="enviar" block
+              >Enviar
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-if="editing" justify="center">
+          <v-col md="4">
+            <v-btn color="warning" @click="editUser"  block
+              >Actualizar</v-btn
+            >
+          </v-col>
+        </v-row>
       </v-row>
     </v-form>
 
@@ -120,7 +124,7 @@ export default {
     this.obtenerProveedores();
     this.obtenerUsuarios();
     this.obtenerAdministradores();
-  }, 
+  },
   data() {
     return {
       formUsers: true,
@@ -283,7 +287,7 @@ export default {
             password: this.camposGenerales[3].dato,
             contacto: this.camposGenerales[4].dato,
           };
-          if(this.rolSeleccionado === this.rol[0]) {
+          if (this.rolSeleccionado === this.rol[0]) {
             user = {
               ...user,
               tipoId: this.tipoId.tipoSeleccionado,
@@ -291,8 +295,8 @@ export default {
               direccion: this.camposProveedor[1].dato,
               descripcion: this.descripcion,
             };
-          }          
-          this.$axios.put(url,user).then((response) => {
+          }
+          this.$axios.put(url, user).then((response) => {
             this.editing = false;
             this.obtenerProveedores();
             this.obtenerUsuarios();
@@ -305,6 +309,62 @@ export default {
           this.mensaje = `La persona no existe en la tabla`;
           this.snackbar = true;
         }
+      }
+    },
+    deleteUser(user) {
+      console.log(user);
+      let existIndex = this.usuariosBuscados.findIndex((x) => x.id == user.id);
+
+      if (existIndex > -1) {
+        this.$swal
+          .fire({
+            title: "Desea eliminar el usuario?",
+            text: "Este cambio no se puede revertir.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminalo!",
+            cancelButtonText: "Cancelar",
+          })
+          .then((result) => {
+            console.log(result);
+
+            if (result.value) {
+              let url = "";
+
+              switch (this.rolSeleccionado) {
+                case this.rol[0]:
+                  url = "http://localhost:3002/proveedores/" + user.id;
+                  break;
+                case this.rol[1]:
+                  url = "http://localhost:3002/usuarios/" + user.id;
+                  break;
+                case this.rol[2]:
+                  url = "http://localhost:3002/administradores/" + user.id;
+                  break;
+                default:
+                  break;
+              }
+
+              this.$axios.delete(url).then((response) => {
+                this.$swal.fire(
+                  "Eliminado.",
+                  "La persona ha sido eliminada correctamente.!",
+                  "success"
+                );
+                this.obtenerProveedores();
+                this.obtenerUsuarios();
+                this.obtenerAdministradores();
+              });
+            }
+          });
+      } else {
+        this.$swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "La persona NO existe en la tabla.",
+        });
       }
     },
     enviar() {

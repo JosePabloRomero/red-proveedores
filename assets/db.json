@@ -31,7 +31,14 @@
       "password": "123"
     }
   ],
-  "usuario-ingresado": [],
+  "usuario-ingresado": [
+    {
+      "id": "0",
+      "rol": "administrador",
+      "nombre": "admin",
+      "apellido": "1"
+    }
+  ],
   "productos": [
     {
       "id": "01",
