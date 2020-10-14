@@ -44,8 +44,15 @@
       "id": "01",
       "nombre": "Martillo",
       "categoria": "Ferreteria",
-      "precio": "3000",
+      "precio": "3100",
       "descripcion": "jeej"
+    },
+    {
+      "id": "02",
+      "nombre": "Leche",
+      "categoria": "Supermercado",
+      "precio": "2500",
+      "descripcion": "Jeje"
     }
   ],
   "ventas": [
