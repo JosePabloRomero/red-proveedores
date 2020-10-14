@@ -57,11 +57,11 @@
       "id": 1
     },
     {
-      "idCliente": "01",
-      "idProveedor": "03",
-      "fecha": "13/10/2020",
-      "estado": "En progreso",
-      "id": 2
+      "idCliente": "04",
+      "idProveedor": "222",
+      "fecha": "14/10/2020",
+      "estado": "Finalizada",
+      "id": 3
     }
   ]
 }

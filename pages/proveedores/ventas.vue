@@ -42,6 +42,19 @@
         </v-btn>     
     </v-snackbar>
 
+    <v-data-table
+      :headers="headers"
+      :items="ventas"
+      :items-per-page="5"
+      class="elevation-1"
+    >
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon small @click="deleteVenta(item)">
+          mdi-delete
+        </v-icon>
+      </template>
+    </v-data-table>
+
   </v-container>
 </template>
 
@@ -54,6 +67,14 @@ export default {
   data() {
     return {
       formVentas: true,
+      headers: [
+        { text: "Id de la Venta", value: "id" },
+        { text: "Id del Cliente", value: "idCliente" },
+        { text: "Id del Proveedor", value: "idProveedor" },
+        { text: "Fecha", value: "fecha" },
+        { text: "Estado", value: "estado" },
+        { text: "Acciones", value: "actions" }
+      ],
       mensaje: '',
       snackbar: false,
       estado: ["En progreso", "Finalizada"],
@@ -101,14 +122,51 @@ export default {
         this.snackbar = true
         this.limpiarCampos();
       })
-      console.log(this.ventas);
     },
     limpiarCampos() {
       this.estadoSeleccionado = "";
       this.camposGenerales.forEach((element) => {
         element.dato = "";  
       });
-    } 
+    },
+    loadVenta(venta) {
+      this.venta = Object.assign({}, venta);
+    }, 
+    deleteVenta(venta) {
+      let existIndex = this.ventas.findIndex((x) => x.id == venta.id);
+      if (existIndex > -1) {
+        this.$swal
+          .fire({
+            title: "¿Desea eliminar la venta?",
+            text: "Este cambio no se puede revertir.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, eliminar.",
+            cancelButtonText: "Cancelar",
+          })
+          .then((result) => {
+            if (result.value) {
+              let url = "http://localhost:3002/ventas/" + venta.id;
+              this.$axios.delete(url).then((response) => {
+                this.$swal.fire(
+                  "Eliminado.",
+                  "La venta ha sido eliminada correctamente.",
+                  "success"
+                );
+                this.cargarVentas();
+              });
+            }
+          });
+      } else {
+        this.$swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "La venta no existe en la tabla.",
+        });
+      }
+    }
   },
 };
 </script>
