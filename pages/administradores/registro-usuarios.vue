@@ -31,12 +31,13 @@
             :type="item.type"
             required
             v-if="index === 2"
-          ></v-text-field>
+          ></v-text-field>          
           <v-text-field
             :label="item.label"
             v-model="item.dato"
             :rules="fieldRequired"
             :type="item.type"
+            :disbled="item.editing"
             required
             v-if="index !== 2"
           ></v-text-field>
@@ -47,9 +48,12 @@
       <v-row v-if="rolSeleccionado === rol[0]">
         <v-col md="6">
           <v-select
-            :label="tipoId.label"
-            :items="tipoId.items"
-            v-model="tipoId.tipoSeleccionado"
+            label="Tipo Identificacion"
+            :items="tipo_identificaciones"
+            item-value="id"
+            item-text="nombre"
+            :disabled="editing"
+            v-model="tipoId_seleccionado"
             required
           ></v-select>
         </v-col>
@@ -81,17 +85,13 @@
       </v-row>
       <v-row justify="center" v-if="rolSeleccionado">
         <v-row v-if="!editing" justify="center">
-          <v-col md="4" >
-            <v-btn color="success" @click="enviar" block
-              >Enviar
-            </v-btn>
+          <v-col md="4">
+            <v-btn color="success" @click="enviar" block>Enviar </v-btn>
           </v-col>
         </v-row>
         <v-row v-if="editing" justify="center">
           <v-col md="4">
-            <v-btn color="warning" @click="editUser"  block
-              >Actualizar</v-btn
-            >
+            <v-btn color="warning" @click="editUser" block>Actualizar</v-btn>
           </v-col>
         </v-row>
       </v-row>
@@ -124,6 +124,7 @@ export default {
     this.obtenerProveedores();
     this.obtenerUsuarios();
     this.obtenerAdministradores();
+    this.obtenerIdentificaciones();
   },
   data() {
     return {
@@ -138,11 +139,8 @@ export default {
         { label: "Dirección del proveedor", dato: "" },
       ],
       descripcion: null,
-      tipoId: {
-        label: "Tipo de Identificación",
-        items: ["cedula", "pasaporte"],
-        tipoSeleccionado: "",
-      },
+      tipo_identificaciones: [],
+      tipoId_seleccionado: null,
       /* Comprobar Campos */
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
       emailRules: [
@@ -160,148 +158,149 @@ export default {
         { text: "Actions", value: "actions" },
       ],
       editing: false,
-      idBuscado: "",
-      urlObjetivo: "",
+      idBuscado: "",      
+      url: "http://localhost:3002/api/v1/",
     };
   },
   methods: {
+    cargarDatos() {
+      this.obtenerProveedores();
+      this.obtenerUsuarios();
+      this.obtenerAdministradores();
+      this.obtenerIdentificaciones();
+      this.actualizarRol();
+    },
     actualizarRol() {
       this.camposGenerales = [
         {
           label: `Nombre del ${this.rolSeleccionado}`,
           dato: "",
-          type: "text",
+          type: "text"
         },
         {
           label: `Apellido del ${this.rolSeleccionado}`,
           dato: "",
-          type: "text",
+          type: "text"
         },
         {
           label: `E-mail del ${this.rolSeleccionado}`,
           dato: "",
-          type: "email",
+          type: "email"         
         },
         {
           label: `Contraseña del ${this.rolSeleccionado}`,
           dato: "",
-          type: "password",
+          type: "password"
+          
         },
-        /* Es necesario agregar este campo? */
         {
           label: `Telefono del ${this.rolSeleccionado}`,
           dato: "",
-          type: "text",
+          type: "text"          
         },
       ];
-      switch (this.rolSeleccionado) {
+      this.url = "http://localhost:3002/api/v1/";
+      switch (this.rolSeleccionado) {        
         case this.rol[0]:
           this.usuariosBuscados = this.proveedores;
-          this.urlObjetivo = "http://localhost:3002/proveedores";
+          this.url += "proveedores/";
           break;
         case this.rol[1]:
           this.usuariosBuscados = this.usuarios;
-          this.urlObjetivo = "http://localhost:3002/usuarios";
+          this.url += "usuarios/";
           break;
         case this.rol[2]:
           this.usuariosBuscados = this.administradores;
-          this.urlObjetivo = "http://localhost:3002/administradores";
+          this.url += "administradores/";
           break;
         default:
           break;
       }
     },
-    obtenerProveedores() {
-      let url = "http://localhost:3002/proveedores";
-      this.$axios.get(url).then((response) => {
-        let data = response.data;
-        this.proveedores = data;
-      });
+    async obtenerIdentificaciones() {
+      this.url = "http://localhost:3002/api/v1/";
+      let {data} = await this.$axios.get(this.url + "identificaciones");
+      this.tipo_identificaciones = data.info;
     },
-    obtenerUsuarios() {
-      let url = "http://localhost:3002/usuarios";
-      this.$axios.get(url).then((response) => {
-        let data = response.data;
-        this.usuarios = data;
-      });
+    async obtenerProveedores() {     
+      this.url = "http://localhost:3002/api/v1/";
+      let {data} = await this.$axios.get(this.url + "proveedores");
+      this.proveedores = data.info;
     },
-    obtenerAdministradores() {
-      let url = "http://localhost:3002/administradores";
-      this.$axios.get(url).then((response) => {
-        let data = response.data;
-        this.administradores = data;
-      });
+    async obtenerUsuarios() {
+      this.url = "http://localhost:3002/api/v1/";
+      let {data} = await this.$axios.get(this.url + "usuarios");
+      this.usuarios = data.info;
     },
-    obtenerIdUsuario() {
-      if (this.usuarios.length !== 0) {
-        let id = (
-          parseInt(this.usuarios[this.usuarios.length - 1].id) + 1
-        ).toString();
-        return id;
-      } else {
-        return "0";
-      }
+    async obtenerAdministradores() {
+      this.url = "http://localhost:3002/api/v1/";
+      let {data} = await this.$axios.get(this.url + "usuarios");
+      this.administradores = data.info;
     },
-    limpiarCampos() {
-      this.actualizarRol();
-      this.tipoId.tipoSeleccionado = "";
+    limpiarCampos() {          
+      this.tipoId_seleccionado= null,
       this.descripcion = null;
       this.camposProveedor.forEach((element) => {
         element.dato = "";
       });
+      this.camposGenerales.forEach((element) => {
+        element.dato = "";
+      });
       this.idBuscado = "";
+      this.url = "http://localhost:3002/api/v1/";
     },
-    loadUser(user) {
+    loadUser(user) {      
       this.camposGenerales[0].dato = user.nombre;
       this.camposGenerales[1].dato = user.apellido;
       this.camposGenerales[2].dato = user.email;
-      this.camposGenerales[3].dato = user.password;
+      this.camposGenerales[3].dato = user.clave;
+      this.camposGenerales[3].editing = true;
       this.camposGenerales[4].dato = user.contacto;
       this.idBuscado = user.id;
       if (this.rolSeleccionado === this.rol[0]) {
-        this.tipoId.tipoSeleccionado = user.tipoId;
-        this.camposProveedor[0].dato = user.id;
+        this.this.tipoId_seleccionado = user.tipo_id;
+        this.camposProveedor[0].dato = user.identificacion;
         this.camposProveedor[1].dato = user.direccion;
         this.descripcion = user.descripcion;
       }
       this.editing = true;
     },
-    editUser() {
+    editUser() {      
       if (this.$refs.formUsers.validate() && this.formUsers) {
-        // Encontrar la posición que esta el usuario en el array
+        // Encontrar la posición que esta el usuario
         let existIndex = this.usuariosBuscados.findIndex(
           (x) => x.id == this.idBuscado
         );
-        // Validación si la identificación de una persona ya existe en el array
+        // Validación si la identificación de una persona ya existe
         if (existIndex > -1) {
           console.log(
             "La persona existe y esta en la posición del array",
             existIndex
           );
           //Modificar la persona del array
-          let url = `${this.urlObjetivo}/${this.idBuscado}`;
+          let url = `${this.url}/${this.idBuscado}`;
           let user = {
             nombre: this.camposGenerales[0].dato,
             apellido: this.camposGenerales[1].dato,
             email: this.camposGenerales[2].dato,
-            password: this.camposGenerales[3].dato,
+            clave: this.camposGenerales[3].dato,
             contacto: this.camposGenerales[4].dato,
           };
           if (this.rolSeleccionado === this.rol[0]) {
             user = {
               ...user,
-              tipoId: this.tipoId.tipoSeleccionado,
-              id: this.camposProveedor[0].dato,
+              tipo_id: this.tipoId.tipoSeleccionado,
+              identificacion: this.camposProveedor[0].dato,
               direccion: this.camposProveedor[1].dato,
               descripcion: this.descripcion,
             };
           }
           this.$axios.put(url, user).then((response) => {
             this.editing = false;
-            this.obtenerProveedores();
-            this.obtenerUsuarios();
-            this.obtenerAdministradores();
+            this.camposGenerales[3].editing = false;
             this.limpiarCampos();
+            this.cargarDatos();           
+            
             this.mensaje = `El ${this.rolSeleccionado} fue actualizado con exito`;
             this.snackbar = true;
           });
@@ -311,111 +310,131 @@ export default {
         }
       }
     },
-    deleteUser(user) {
-      console.log(user);
-      let existIndex = this.usuariosBuscados.findIndex((x) => x.id == user.id);
-
-      if (existIndex > -1) {
-        this.$swal
-          .fire({
-            title: "Desea eliminar el usuario?",
-            text: "Este cambio no se puede revertir.",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Si, eliminalo!",
-            cancelButtonText: "Cancelar",
-          })
-          .then((result) => {
-            console.log(result);
-
-            if (result.value) {
-              let url = "";
-
-              switch (this.rolSeleccionado) {
-                case this.rol[0]:
-                  url = "http://localhost:3002/proveedores/" + user.id;
-                  break;
-                case this.rol[1]:
-                  url = "http://localhost:3002/usuarios/" + user.id;
-                  break;
-                case this.rol[2]:
-                  url = "http://localhost:3002/administradores/" + user.id;
-                  break;
-                default:
-                  break;
-              }
-
-              this.$axios.delete(url).then((response) => {
-                this.$swal.fire(
-                  "Eliminado.",
-                  "La persona ha sido eliminada correctamente.!",
-                  "success"
-                );
-                this.obtenerProveedores();
-                this.obtenerUsuarios();
-                this.obtenerAdministradores();
-              });
-            }
-          });
-      } else {
-        this.$swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "La persona NO existe en la tabla.",
-        });
+    deleteUser(user) {     
+        let existIndex = this.usuariosBuscados.findIndex((x) => x.id == user.id);
+        if (existIndex > -1) {
+          this.$swal
+            .fire({
+              title: "Desea eliminar el usuario?",
+              text: "Este cambio no se puede revertir.",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Si, eliminalo!",
+              cancelButtonText: "Cancelar",
+            })
+            .then((result) => {         
+              if (result.isConfirmed) {              
+                this.$axios.delete(this.url + user.id)
+                .then((response) => {
+                  this.cargarDatos();
+                   this.$swal.fire(
+                      "Eliminado.",
+                      "La persona ha sido eliminada correctamente.!",
+                      "success"
+                    );        
+                })
+                .catch((error) => {
+                    this.$swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Error eliminando la persona",
+                    });
+                });   
+              }         
+            })
+            this.cargarDatos();            
+        } else {
+            this.$swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "La persona no existe en la tabla.",
+            });
+        }
+        
       }
-    },
-    enviar() {
+    ,
+    async enviar() {
       if (this.$refs.formUsers.validate() && this.formUsers) {
-        /* Generamos el objeto usuario con los datos */
-        let url = "http://localhost:3002/";
+        /* Generamos el objeto usuario con los datos */        
         let user = {
           nombre: this.camposGenerales[0].dato,
           apellido: this.camposGenerales[1].dato,
           email: this.camposGenerales[2].dato,
-          password: this.camposGenerales[3].dato,
+          clave: this.camposGenerales[3].dato,
           contacto: this.camposGenerales[4].dato,
         };
-
-        if (this.rolSeleccionado === this.rol[0]) {
-          url += "proveedores";
-          let exist = this.proveedores.find(
-            (x) => x.id == this.camposProveedor[0].dato
-          );
-          console.log(exist);
-          if (exist == undefined) {
-            user = {
-              ...user,
-              tipoId: this.tipoId.tipoSeleccionado,
-              id: this.camposProveedor[0].dato,
-              direccion: this.camposProveedor[1].dato,
-              descripcion: this.descripcion,
-            };
-            this.$axios.post(url, user).then((response) => {
-              this.obtenerProveedores();
-              this.mensaje = `El ${this.rolSeleccionado} fue registrado con exito`;
+        try {
+           if (this.rolSeleccionado === this.rol[0]) {         
+              let exist = this.proveedores.find(
+                (x) => x.identificacion == this.camposProveedor[0].dato
+              );          
+            if (exist == undefined) {
+              user = {              
+                identificacion: this.camposProveedor[0].dato,
+                tipo_id: this.tipoId.tipoSeleccionado,       
+                ...user,       
+                direccion: this.camposProveedor[1].dato,
+                descripcion: this.descripcion,
+              };
+              let {data} = await this.$axios.post(this.url, user)
+                             
+                this.$swal.fire(
+                  "Creado",
+                  `El ${this.rolSeleccionado} fue registrado con exito`,
+                  "success"
+                );
+                          
+            } else {
+              this.mensaje = `El ${this.rolSeleccionado} ya existe en la base de datos`;
               this.snackbar = true;
-              this.limpiarCampos();
-            });
-          } else {
-            this.mensaje = `El ${this.rolSeleccionado} ya existe en la base de datos`;
-            this.snackbar = true;
+            }
+          } else if(this.rolSeleccionado === this.rol[1]) {
+              let exist = this.usuarios.find(
+                (x) => x.email == this.camposGenerales[2].dato
+              );  
+              if (exist == undefined) {
+                let {data} = await this.$axios.post(this.url, user);
+                
+                this.$swal.fire(
+                  "Creado",
+                  `El ${this.rolSeleccionado} fue registrado con exito`,
+                  "success"
+                );
+                        
+              } else {
+                this.mensaje = `El ${this.rolSeleccionado} con dicho email ya existe en la base de datos`;
+                this.snackbar = true;
+              }              
+          } else if(this.rolSeleccionado === this.rol[2]) {
+              let exist = this.administradores.find(
+                (x) => x.email == this.camposGenerales[2].dato
+              );  
+              if (exist == undefined) {
+                let {data} = await this.$axios.post(this.url, user);
+                
+                this.$swal.fire(
+                  "Creado",
+                  `El ${this.rolSeleccionado} fue registrado con exito`,
+                  "success"
+                );
+                      
+              } else {
+                this.mensaje = `El ${this.rolSeleccionado} con dicho email ya existe en la base de datos`;
+                this.snackbar = true;
+              }              
           }
-        } else {
-          url += "usuarios";
-          user = {
-            ...user,
-            id: this.obtenerIdUsuario(),
-          };
-          this.$axios.post(url, user).then((response) => {
-            this.obtenerProveedores();
-            this.mensaje = `El ${this.rolSeleccionado} fue registrado con exito`;
-            this.snackbar = true;
-            this.limpiarCampos();
-          });
+          this.cargarDatos();  
+          this.limpiarCampos();                  
+        } catch (error) {
+          this.$swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `Error al agregar el ${this.rolSeleccionado}`,
+          });         
         }
+        
       }
     },
   },

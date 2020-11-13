@@ -46,9 +46,11 @@
       <v-row v-if="rolSeleccionado === rol[0]">
         <v-col md="6">
           <v-select
-            :label="tipoId.label"
-            :items="tipoId.items"
-            v-model="tipoId.tipoSeleccionado"
+            label="Tipo Identificacion"
+            :items="tipo_identificaciones"
+            item-value="id"
+            item-text="nombre"
+            v-model="tipoId_seleccionado"
             required
           ></v-select>
         </v-col>
@@ -94,21 +96,8 @@
 <script>
 export default {
   layout: "default",
-  beforeCreate() {
-    let url = "http://localhost:3002/usuario-ingresado";
-    this.$axios
-      .get(url)
-      .then((response) => {
-        let data = response.data;
-        this.usuarioPrevio = data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  },
   beforeMount() {
-    this.obtenerProveedores();
-    this.obtenerUsuarios();
+    this.loadPage();
   },
   data() {
     return {
@@ -123,23 +112,21 @@ export default {
         { label: "Dirección del proveedor", dato: "" },
       ],
       descripcion: null,
-      tipoId: {
-        label: "Tipo de Identificación",
-        items: ["cedula", "pasaporte"],
-        tipoSeleccionado: "",
-      },
+      tipo_identificaciones: [],
+      tipoId_seleccionado: null,
       /* Comprobar Campos */
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
       emailRules: [
         (v) => !!v || "El e-mail es requerido",
         (v) => /.+@.+/.test(v) || "El e-mail debe de ser valido",
       ],
-      usuarios: [],
-      proveedores: [],
-      usuarioPrevio: null,
+      url: "http://localhost:3002/api/v1/",
     };
   },
   methods: {
+    loadPage() {
+      this.obtenerIdentificaciones();
+    },
     actualizarRol() {
       this.camposGenerales = [
         {
@@ -162,7 +149,6 @@ export default {
           dato: "",
           type: "password",
         },
-        /* Es necesario agregar este campo? */
         {
           label: `Telefono del ${this.rolSeleccionado}`,
           dato: "",
@@ -170,89 +156,50 @@ export default {
         },
       ];
     },
-    obtenerUsuarioRegistrado() {},
-    obtenerProveedores() {
-      let url = "http://localhost:3002/proveedores";
-      this.$axios.get(url).then((response) => {
-        let data = response.data;
-        this.proveedores = data;
-      });
+    async obtenerIdentificaciones() {
+      let { data } = await this.$axios.get(this.url + "identificaciones");
+      this.tipo_identificaciones = data.info;
     },
-    obtenerUsuarios() {
-      let url = "http://localhost:3002/usuarios";
-      this.$axios.get(url).then((response) => {
-        let data = response.data;
-        this.usuarios = data;
-      });
-    },
-    obtenerIdUsuario() {
-      if (this.usuarios.length !== 0) {
-        let id = (
-          parseInt(this.usuarios[this.usuarios.length - 1].id) + 1
-        ).toString();
-        return id;
-      } else {
-        return "0";
-      }
-    },
-    limpiarCampos() {
-      this.actualizarRol();
-      this.tipoId.tipoSeleccionado = "";
-      this.descripcion = null;
-      this.camposProveedor.forEach((element) => {
-        element.dato = "";
-      });
-    },
-    enviar() {
+    async enviar() {
       if (this.$refs.formUsers.validate() && this.formUsers) {
         /* Generamos el objeto usuario con los datos */
-        let url = "http://localhost:3002/";
         let user = {
           nombre: this.camposGenerales[0].dato,
           apellido: this.camposGenerales[1].dato,
           email: this.camposGenerales[2].dato,
-          password: this.camposGenerales[3].dato,
+          clave: this.camposGenerales[3].dato,
           contacto: this.camposGenerales[4].dato,
         };
-
-        if (this.rolSeleccionado === this.rol[0]) {
-          url += "proveedores";
-          let exist = this.proveedores.find(
-            (x) => x.id == this.camposProveedor[0].dato
-          );
-          console.log(exist);
-          if (exist == undefined) {
+        try {
+          if (this.rolSeleccionado === this.rol[0]) {
             user = {
+              identificacion: this.camposProveedor[0].dato,
+              tipo_id: this.tipoId_seleccionado,
               ...user,
-              tipoId: this.tipoId.tipoSeleccionado,
-              id: this.camposProveedor[0].dato,
               direccion: this.camposProveedor[1].dato,
               descripcion: this.descripcion,
             };
-            this.$axios.post(url, user).then((response) => {
-              this.obtenerProveedores();
-              this.mensaje = `El ${this.rolSeleccionado} fue registrado con exito`;
-              this.snackbar = true;
-              this.limpiarCampos();
-            });
+            console.log(user);
+            let { data } = await this.$axios.post(
+              this.url + "proveedores",
+              user
+            );
           } else {
-            this.mensaje = `El ${this.rolSeleccionado} ya existe en la base de datos`;
-            this.snackbar = true;
+            let { data } = await this.$axios.post(this.url + "usuarios", user);
           }
-        } else {
-          url += "usuarios";
-          user = {
-            ...user,
-            id: this.obtenerIdUsuario(),
-          };
-          this.$axios.post(url, user).then((response) => {
-            this.obtenerProveedores();
-            this.mensaje = `El ${this.rolSeleccionado} fue registrado con exito`;
-            this.snackbar = true;
-            this.limpiarCampos();
+          this.$swal.fire(
+            "Creado",
+            "La cuenta ha sido creada correctamente!",
+            "success"
+          );
+          this.$router.push("/");
+        } catch (error) {
+          this.$swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Error al crear la cuenta.",
           });
-        }        
-        this.$router.push('/');
+        }
       }
     },
   },

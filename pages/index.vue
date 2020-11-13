@@ -18,12 +18,12 @@
                 :items="rol"
                 v-model="rolSeleccionado"
                 prepend-icon="mdi-account"
-                label="Seleccione un rol"
+                label="Seleccione un rol *"
                 :rules="fieldRequired"
                 required
               ></v-select>
               <v-text-field
-                label="Correo"
+                label="Correo *"
                 prepend-icon="mdi-email-open"
                 type="email"
                 :rules="emailRules"
@@ -31,11 +31,11 @@
               ></v-text-field>
 
               <v-text-field
-                label="Contraseña"
+                label="Contraseña *"
                 prepend-icon="mdi-lock"
                 type="password"
                 :rules="fieldRequired"
-                v-model="password"
+                v-model="clave"
               ></v-text-field>
               <v-btn color="orange" @click="ingresar"> Ingresar </v-btn>
             </v-form>
@@ -63,38 +63,17 @@
 <script>
 export default {
   layout: "blank",
-  beforeMount() {
-    this.obtenerUsuarios();
-    let url = "http://localhost:3002/usuario-ingresado";   
-    this.$axios.get(url).then((response) => {
-      let data = response.data;      
-      this.usuarioPrevio = data
-      if(data && data.length !== 0) {
-          this.idUsuarioPrevio = data[0].id      
-          this.$axios
-          .delete(url + `/${this.idUsuarioPrevio}`)
-          .then((response) => {});
-      }      
-    }).catch(error => {
-      console.log(error)
-    })
-  },
   data() {
     return {
       formLogin: true,
-      rol: ["Proveedor", "Usuario", "Administrador"],
+      rol: ["Usuario", "Proveedor", "Administrador"],
       rolSeleccionado: null,
       email: null,
-      password: null,
-      proveedores: [],
-      usuarios: [],
-      administradores: [],
+      clave: null,
       snackbar: false,
       mensaje: "",
-      usuario: undefined,
-      urlNuevaDireccion: "/",
-      usuarioPrevio: undefined,
-      idUsuarioPrevio: "",
+      url: "http://localhost:3002/api/v1/login/",
+      urlPush: "/",
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
       emailRules: [
         (v) => !!v || "El e-mail es requerido",
@@ -103,66 +82,53 @@ export default {
     };
   },
   methods: {
-    obtenerUsuarios() {
-      let url = `http://localhost:3002/proveedores`;
-      this.$axios.get(url).then((response) => {
-        let data = response.data;
-        this.proveedores = data;
-      });
-      url = `http://localhost:3002/usuarios`;
-      this.$axios.get(url).then((response) => {
-        let data = response.data;
-        this.usuarios = data;
-      });
-      url = `http://localhost:3002/administradores`;
-      this.$axios.get(url).then((response) => {
-        let data = response.data;
-        this.administradores = data;       
-      }); 
-    },
-    ingresarUsuario() {
-      let url = "http://localhost:3002/usuario-ingresado";
-      let user = {
-        id: this.usuario.id,
-        rol: this.rolSeleccionado.toLowerCase(),
-        nombre: this.usuario.nombre,
-        apellido: this.usuario.apellido,
-      };     
-      this.$axios.post(url, user).then((response) => {});
-      this.$router.push(this.urlNuevaDireccion); 
-    },
-    ingresar() {
+    async ingresar() {
       if (this.$refs.formLogin.validate() && this.formLogin) {
-        this.obtenerUsuarios();
-
         switch (this.rolSeleccionado) {
           case this.rol[0]:
-            this.usuario = this.proveedores.find((x) => x.email === this.email);
-            this.urlNuevaDireccion = "/proveedores/inicio-proveedores";
+            this.url += 1;
+            this.urlPush = "/usuarios/inicio-usuarios";
             break;
           case this.rol[1]:
-            this.usuario = this.usuarios.find((x) => x.email === this.email);
-            this.urlNuevaDireccion = "/usuarios/inicio-usuarios";
+            this.url += 2;
+            this.urlPush = "/proveedores/inicio-proveedores";
             break;
           case this.rol[2]:
-            this.usuario = this.administradores.find((x) => x.email === this.email);
-            this.urlNuevaDireccion = '/administradores/inicio-administradores'
-            break; 
+            this.url += 3;
+            this.urlPush = "/administradores/inicio-administradores";
+            break;
           default:
             break;
         }
-
-        if (this.usuario !== undefined) {
-          if (this.usuario.password === this.password) {
-            //Ingresamos el usuario a la app con su rol
-            this.ingresarUsuario();
+        try {
+          let payload = {};
+          payload.email = this.email;
+          payload.clave = this.clave;
+          let {data} = await this.$axios.post(this.url, payload);
+          if(data.ok) {            
+            localStorage.setItem('token', data.info);
+            this.$router.push(this.urlPush);
           } else {
-            this.mensaje = "La contraseña es incorrecta";
-            this.snackbar = true;
+            this.$swal.fire({
+              icon: "error",
+              title: "Ocurrió un error!",
+              text: data.message,
+            });
           }
-        } else {
-          this.mensaje = `No encontramos un ${this.rolSeleccionado} correspondiente a ese correo`;
-          this.snackbar = true;
+        } catch (error) {
+          if (error.response) {
+            this.$swal.fire({
+              icon: "error",
+              title: "Ocurrió un error!",
+              text: error.response.data.message,
+            });
+          } else {
+              this.$swal.fire({
+              icon: "error",
+              title: "Ocurrió un error!",
+              text: error,
+            });
+          }
         }
       }
     },

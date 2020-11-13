@@ -50,7 +50,10 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn color="warning" to="/">Salir</v-btn>
+      <span v-if="user" class="px-1">
+        {{user.nombre}} {{user.apellido}}
+      </span>      
+      <v-btn color="warning" @click="salir">Salir</v-btn>
       <v-btn
         icon
         @click.stop="rightDrawer = !rightDrawer"
@@ -116,7 +119,44 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Red Proveedores - Proveedores'
+      title: 'Red Proveedores - Proveedores',
+      user: null
+    }
+  },
+  beforeMount() {
+    this.cargarProveedor();
+  },
+  methods: {
+    async cargarProveedor() {
+      try {
+      let token = localStorage.getItem('token');
+      let url = 'http://localhost:3002/api/v1/auth/';
+      this.$axios.setToken(token, 'Bearer');
+      let {data} = await this.$axios.get(url);
+      console.log(data.info.rol)
+      switch (data.info.rol) {
+        case "1":
+          this.$router.push('/usuarios/inicio-usuarios');
+        break;
+        case "2":     
+          this.user = data.info          
+        break;
+        case "3":
+          this.$router.push('/administradores/inicio-administradores');
+        break;      
+        default:
+          break;
+      }
+       
+      }       
+      catch (error) {
+        console.log(error)
+        this.$router.push('/');
+      }
+    },
+    salir() {
+      localStorage.removeItem('token');
+      this.$router.push('/');
     }
   }
 }
