@@ -109,8 +109,7 @@ export default {
           icon: 'mdi-account-search',
           title: 'Buscar Proveedor',
           to: '/usuarios/inicio-usuarios'
-        }
-        
+        }     
       ],
       miniVariant: false,
       right: true,
