@@ -63,5 +63,12 @@
       "estado": "Finalizada",
       "id": 3
     }
+  ],
+  "resenas": [
+    {
+      "nivel_satisfaccion": "5",
+      "comentario": "excelente servicio",
+      "id_venta": "11"
+    }
   ]
 }
