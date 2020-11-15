@@ -68,7 +68,7 @@ const url = "http:///localhost:3002/api/v1/"
 export default {
   layout: "proveedores",
   beforeMount() {
-    this.loadPage();
+    this.cargarVentas();
   },
   beforeUpdate() {
     try {
@@ -109,13 +109,10 @@ export default {
       ],
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
       ventas: [],
-      idBuscado = ""
+      idBuscado : ""
     };
   },
   methods: {
-    loadPage() {
-      this.cargarVentas();
-    },
     async obtenerEstados() {
       let { data } = await this.$axios.get(url + "estados");
       this.estados_venta = data.info;
@@ -123,6 +120,7 @@ export default {
     async cargarVentas() {
       let { data } = await this.$axios.get(url + "ventas")
       this.ventas = data.info;
+      console.log(this.ventas)
     },
     async enviar() {
       if (this.$refs.formVentas.validate() && this.formVentas) {
@@ -145,7 +143,7 @@ export default {
         element.dato = "";  
       });
     },
-    cargarVenta(venta) {
+    async cargarVenta(venta) {
       let token = localStorage.getItem("token");
       this.$axios.setToken(token, 'Bearer');
       let {data} = await this.$axios.get(url + "auth");
