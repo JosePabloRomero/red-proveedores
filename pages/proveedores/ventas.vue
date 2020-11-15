@@ -18,6 +18,10 @@
           ></v-text-field>
         </v-col>
 
+        <v-row justify="center">
+          <v-date-picker v-model="picker"></v-date-picker>
+        </v-row>
+
         <v-col md="6">
           <v-select
             :items="estados_venta"    
@@ -90,6 +94,7 @@ export default {
       snackbar: false,
       estados_venta: [],
       estadoSeleccionado: null,
+      picker: null,
       camposGenerales: [
         {
           label: `ID del Cliente`,
@@ -100,16 +105,11 @@ export default {
           label: `Id del Proveedor`,
           dato: "",
           type: "text",
-        },
-        {
-          label: `Fecha de la venta`,
-          dato: "",
-          type: "text",
         }
       ],
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
       ventas: [],
-      idBuscado : ""
+      idBuscado: ""
     };
   },
   methods: {
@@ -128,7 +128,7 @@ export default {
         id_estado: this.estadoSeleccionado,
         id_proveedor : this.camposGenerales[1].dato,
         id_usuario : this.camposGenerales[0].dato,
-        fecha : this.camposGenerales[2].dato,        
+        fecha : this.picker  
         }
         let { data } = await this.$axios.post(url + "ventas", ventas);
         this.mensaje = `La venta fue registrada con éxito`
@@ -142,6 +142,7 @@ export default {
       this.camposGenerales.forEach((element) => {
         element.dato = "";  
       });
+      this.idBuscado = "";
     },
     async cargarVenta(venta) {
       let token = localStorage.getItem("token");
@@ -149,8 +150,8 @@ export default {
       let {data} = await this.$axios.get(url + "auth");
       this.camposGenerales[0].dato = venta.id_usuario;
       this.camposGenerales[1].dato = data.info.id;
-      this.camposGenerales[2].dato = venta.fecha;
       this.estadoSeleccionado = venta.id_estado;
+      this.picker = venta.fecha;
       this.idBuscado = venta.id;
       this.editing = true;
 
@@ -163,7 +164,7 @@ export default {
         if (existIndex > -1) {
           console.log("La venta existe y está en la posición del array", existIndex);
           let venta = {
-            fecha: this.camposGenerales[2].dato,
+            fecha: this.picker,
             id_estado: this.estadoSeleccionado
           };
             this.$axios.put(url + "ventas", venta).then((response) => {
