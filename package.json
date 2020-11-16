@@ -14,7 +14,8 @@
     "core-js": "^3.6.5",
     "nuxt": "^2.14.6",
     "nuxt-sweetalert2": "^1.0.0",
-    "sweetalert2": "^10.9.0"
+    "sweetalert2": "^10.9.0",
+    "vue-moment": "^4.1.0"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.11.2"

@@ -114,6 +114,11 @@ export default {
           icon: 'mdi-store-outline',
           title: 'Agregar Productos',
           to: '/proveedores/registro-productos'
+        },   
+        {
+          icon: 'mdi-account-circle',
+          title: 'Mi perfil',
+          to: '/proveedores/perfil'
         },        
       ],
       miniVariant: false,

@@ -109,6 +109,10 @@ export default {
           icon: 'mdi-account-search',
           title: 'Buscar Proveedor',
           to: '/usuarios/buscar-proveedores'
+        },
+        {
+          title: 'Reseñas',
+          to: '/usuarios/resenas-usuarios'
         }
         
       ],
