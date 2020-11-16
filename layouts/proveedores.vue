@@ -114,7 +114,8 @@ export default {
           icon: 'mdi-store-outline',
           title: 'Agregar Productos',
           to: '/proveedores/registro-productos'
-        },        
+        }, 
+              
       ],
       miniVariant: false,
       right: true,
