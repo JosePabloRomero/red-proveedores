@@ -108,7 +108,7 @@ export default {
         {
           icon: 'mdi-account-search',
           title: 'Buscar Proveedor',
-          to: '/usuarios/inicio-usuarios'
+          to: '/usuarios/buscar-proveedores'
         }
         
       ],
