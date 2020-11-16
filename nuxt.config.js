@@ -1,10 +1,12 @@
 import colors from 'vuetify/es5/util/colors'
+import colores from 'vuetify/lib/util/colors'
+
 
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - proveedores-app',
-    title: 'proveedores-app',
+    titleTemplate: '%s - Red de proveedores',
+    title: 'Red de proveedores',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -45,13 +47,13 @@ export default {
       light: true,
       themes: {
         light: {
-          primary: colors.blue.base,
-          secondary: colors.cyan.base,
-          accent: colors.teal.base,
-          error: colors.red.base,
-          warning: colors.orange.base,
-          info: colors.yellow.base,
-          success: colors.amber.base
+          primary: colores.teal.lighten3, 
+          secondary: colores.orange.lighten4,
+          accent: colors.teal.darken1,
+          error: colores.red.accent3,
+          warning: colores.orange.lighten4,
+          info: colores.orange.lighten4,
+          success: colores.orange.lighten4
         }
       }
     }
