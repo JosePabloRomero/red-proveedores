@@ -203,6 +203,12 @@ export default {
         }
         this.items.push(imagenes)
       }
+      if (this.nombreCategoria = "Ferretería") {
+        let imagenes = {
+          src: "https://cdn.pixabay.com/photo/2019/04/15/07/12/tools-4128591_960_720.jpg"
+        }
+        this.items.push(imagenes)
+      }
     }
   },
 };
