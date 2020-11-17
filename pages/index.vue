@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col class="primary" align="center">
-        <h1>Bienvenido a la aplicación red de proveedores</h1>
+        <h1 class="white--text">Bienvenido a la aplicación red de proveedores</h1>
       </v-col>
     </v-row>
 
@@ -37,14 +37,14 @@
                 :rules="fieldRequired"
                 v-model="clave"
               ></v-text-field>
-              <v-btn color="orange" @click="ingresar"> Ingresar </v-btn>
+              <v-btn color="accent" @click="ingresar"> Ingresar </v-btn>
             </v-form>
           </v-card-text>
 
           <v-card-text class="text--primary mt-0">
             <div>
               ¿Aun no tienes una cuenta?
-              <v-btn color="orange" to="/usuarios/registro-usuarios" text>
+              <v-btn color="accent" to="/usuarios/registro-usuarios" text>
                 Registrate
               </v-btn>
             </div>

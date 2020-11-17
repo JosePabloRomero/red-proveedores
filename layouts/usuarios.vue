@@ -53,7 +53,7 @@
       <span v-if="user" class="px-1">
         {{user.nombre}} {{user.apellido}}
       </span>  
-      <v-btn color="warning" to="/">Salir</v-btn>
+      <v-btn color="accent" to="/">Salir</v-btn>
       <v-btn
         icon
         @click.stop="rightDrawer = !rightDrawer"
@@ -108,7 +108,7 @@ export default {
         {
           icon: 'mdi-account-search',
           title: 'Buscar Proveedor',
-          to: '/usuarios/inicio-usuarios'
+          to: '/usuarios/buscar-proveedores'
         },
         {
           title: 'Reseñas',

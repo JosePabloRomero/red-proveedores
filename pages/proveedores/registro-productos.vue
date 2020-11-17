@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="primary" align="center">
+      <v-col class="primary white--text" align="center">
         <h1>Formulario Registro de Productos</h1>
       </v-col>
     </v-row>
@@ -34,8 +34,8 @@
       </v-row>
       <v-row justify="center">
         <v-col md="4">
-          <v-btn color="success" @click="enviar" block v-if="!editing">Enviar </v-btn>
-          <v-btn color="success" @click="editarProductos" block v-if="editing">Editar </v-btn>
+          <v-btn class="black--text success" @click="enviar" block v-if="!editing">Enviar </v-btn>
+          <v-btn class="black--text success" @click="editarProductos" block v-if="editing">Editar </v-btn>
         </v-col>
       </v-row>
     </v-form>

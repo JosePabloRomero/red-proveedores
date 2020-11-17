@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="primary" align="center">
+      <v-col class="primary white--text" align="center">
         <h1>Formulario Registro de Usuarios</h1>
       </v-col>
     </v-row>
@@ -81,7 +81,7 @@
       </v-row>
       <v-row justify="center" v-if="rolSeleccionado">
         <v-col md="4">
-          <v-btn color="success" @click="enviar" block>Enviar </v-btn>
+          <v-btn class="success black--text" @click="enviar" block>Enviar </v-btn>
         </v-col>
       </v-row>
     </v-form>

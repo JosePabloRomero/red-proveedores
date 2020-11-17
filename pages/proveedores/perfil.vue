@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col class="primary" align="center">
+      <v-col class="primary white--text" align="center">
         <h1>Mi perfil</h1>
       </v-col>
     </v-row>
@@ -10,7 +10,7 @@
       <v-row>
         <v-col>
           <v-card class="mx-auto" max-width="650">
-            <v-card-title>{{ nombre }} {{ apellido }}</v-card-title>
+            <v-card-title class="justify-center success">{{ nombre }} {{ apellido }}</v-card-title>
             <v-img>
               <v-carousel>
                 <v-carousel-item
@@ -22,7 +22,7 @@
                 ></v-carousel-item>
               </v-carousel>
             </v-img>
-            <v-card-title>
+            <v-card-title class="justify-center">
               <center>
                 <v-chip
                   v-for="(item, index) in categorias"
@@ -50,8 +50,8 @@
       <v-row>
         <v-card class="mx-auto" width="650">
           <v-img
-            height="250"
-            src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+            height="230"
+            src="https://st2.depositphotos.com/4468607/12144/v/450/depositphotos_121449080-stock-illustration-5-gold-star-icon-set.jpg"
           ></v-img>
 
           <v-card-title>Calificación del proveedor</v-card-title>
@@ -129,20 +129,7 @@ export default {
       formPerfil: true,
       mensaje: "",
       snackbar: false,
-      items: [
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
-        },
-      ],
+      items: [],
       show: false,
       rating: null,
       id: "",
@@ -152,6 +139,7 @@ export default {
       contacto: "",
       direccion: "",
       show: false,
+      nombreCategoria: "",
       categorias: [],
       messages: [],
     };
@@ -160,37 +148,62 @@ export default {
     loadPage() {
       this.cargarProveedor();
       this.cargarResena();
+      this.imagenesCategorias();
     },
     async cargarProveedor() {
       let token = localStorage.getItem("token");
       this.$axios.setToken(token, "Bearer");
-      let { data } = await this.$axios.get(url + "auth");
-      this.id = data.info.id;
-      this.nombre = data.info.nombre;
-      this.apellido = data.info.apellido;
-      this.descripcion = data.info.descripcion;
-      this.direccion = data.info.direccion;
-      this.contacto = data.info.contacto;
+      let id = await this.$axios.get(url + "auth");
+      this.id = id.data.info.id;
+      this.nombre = id.data.info.nombre;
+      this.apellido = id.data.info.apellido;
+      this.descripcion = id.data.info.descripcion;
+      this.direccion = id.data.info.direccion;
+      this.contacto = id.data.info.contacto;
       let categorias = await this.$axios.get(
-        url + "categorias_proveedor/" + "4"
+        url + "categorias_proveedor/" + this.id
       );
       this.categorias = categorias.data.info;
-      console.log(this.categorias);
     },
     async cargarResena() {
-      let { data } = await this.$axios.get(url + "resenas_promedio/" + "4");
+      let token = localStorage.getItem("token");
+      this.$axios.setToken(token, "Bearer");
+      let id = await this.$axios.get(url + "auth");
+      this.id = id.data.info.id;
+      let { data } = await this.$axios.get(url + "resenas_promedio/" + this.id);
       this.rating = data.info[0].promedionivel;
-      let infoResena = await this.$axios.get(url + "resenas/" + "4");
+      let infoResena = await this.$axios.get(url + "resenas/" + this.id);
       infoResena.data.info.forEach((element) => {
         let mensaje = {
           from: element.nombre,
           lastname: element.apellido,
           message: element.comentario,
-          color: "deep-purple lighten-1",
+          color: "red accent-1",
         };
         this.messages.push(mensaje)
       });
     },
+    async imagenesCategorias() {
+      let token = localStorage.getItem("token");
+      this.$axios.setToken(token, "Bearer");
+      let id = await this.$axios.get(url + "auth");
+      this.id = id.data.info.id;
+      let categorias = await this.$axios.get(
+        url + "categorias_proveedor/" + this.id);
+      this.nombreCategoria = categorias.data.info.nombre;
+      if (this.nombreCategoria = "Lácteos") {
+        let imagenes = {
+          src: "https://cdn.pixabay.com/photo/2016/05/11/11/20/milk-1385548_960_720.jpg"
+        }
+        this.items.push(imagenes)
+      }
+      if (this.nombreCategoria = "Insumos Agrícolas") {
+        let imagenes = {
+          src: "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+        }
+        this.items.push(imagenes)
+      }
+    }
   },
 };
 </script>
