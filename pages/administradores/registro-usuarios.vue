@@ -37,9 +37,9 @@
             v-model="item.dato"
             :rules="fieldRequired"
             :type="item.type"
-            :disbled="item.editing"
+            :disbled="!item.mostrar"            
             required
-            v-if="index !== 2"
+            v-if="index !== 2 "
           ></v-text-field>
         </v-col>
       </v-row>
@@ -175,28 +175,32 @@ export default {
         {
           label: `Nombre del ${this.rolSeleccionado}`,
           dato: "",
-          type: "text"
+          type: "text",
+          mostrar: true
         },
         {
           label: `Apellido del ${this.rolSeleccionado}`,
           dato: "",
-          type: "text"
+          type: "text",
+          mostrar: true
         },
         {
           label: `E-mail del ${this.rolSeleccionado}`,
           dato: "",
-          type: "email"         
+          type: "email",
+          mostrar: true         
         },
         {
           label: `Contraseña del ${this.rolSeleccionado}`,
           dato: "",
-          type: "password"
-          
+          type: "password",
+          mostrar: !this.editing
         },
         {
           label: `Telefono del ${this.rolSeleccionado}`,
           dato: "",
-          type: "text"          
+          type: "text",
+          mostrar: true         
         },
       ];
       this.url = "http://localhost:3002/api/v1/";
@@ -258,7 +262,7 @@ export default {
       this.camposGenerales[4].dato = user.contacto;
       this.idBuscado = user.id;
       if (this.rolSeleccionado === this.rol[0]) {
-        this.this.tipoId_seleccionado = user.tipo_id;
+        this.tipoId_seleccionado = user.tipo_id;
         this.camposProveedor[0].dato = user.identificacion;
         this.camposProveedor[1].dato = user.direccion;
         this.descripcion = user.descripcion;
@@ -282,8 +286,7 @@ export default {
           let user = {
             nombre: this.camposGenerales[0].dato,
             apellido: this.camposGenerales[1].dato,
-            email: this.camposGenerales[2].dato,
-            clave: this.camposGenerales[3].dato,
+            email: this.camposGenerales[2].dato,            
             contacto: this.camposGenerales[4].dato,
           };
           if (this.rolSeleccionado === this.rol[0]) {

@@ -84,6 +84,7 @@ export default {
   methods: {
     async ingresar() {
       if (this.$refs.formLogin.validate() && this.formLogin) {
+        this.url = "http://localhost:3002/api/v1/login/"
         switch (this.rolSeleccionado) {
           case this.rol[0]:
             this.url += 1;
