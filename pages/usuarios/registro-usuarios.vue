@@ -46,7 +46,7 @@
       <v-row v-if="rolSeleccionado === rol[0]">
         <v-col md="6">
           <v-select
-            label="Tipo Identificacion"
+            label="Tipo Identificacion *"
             :items="tipo_identificaciones"
             item-value="id"
             item-text="nombre"
@@ -67,7 +67,7 @@
 
         <v-col md="6">
           <v-textarea
-            label="Descripción"
+            label="Descripción *"
             filled
             auto-grow
             rows="2"
@@ -108,8 +108,8 @@ export default {
       rolSeleccionado: null,
       camposGenerales: [],
       camposProveedor: [
-        { label: "Numero Identificación", dato: "" },
-        { label: "Dirección del proveedor", dato: "" },
+        { label: "Numero Identificación *", dato: "" },
+        { label: "Dirección del proveedor *", dato: "" },
       ],
       descripcion: null,
       tipo_identificaciones: [],
@@ -130,27 +130,27 @@ export default {
     actualizarRol() {
       this.camposGenerales = [
         {
-          label: `Nombre del ${this.rolSeleccionado}`,
+          label: `Nombre del ${this.rolSeleccionado} *`,
           dato: "",
           type: "text",
         },
         {
-          label: `Apellido del ${this.rolSeleccionado}`,
+          label: `Apellido del ${this.rolSeleccionado} *`,
           dato: "",
           type: "text",
         },
         {
-          label: `E-mail del ${this.rolSeleccionado}`,
+          label: `E-mail del ${this.rolSeleccionado} *`,
           dato: "",
           type: "email",
         },
         {
-          label: `Contraseña del ${this.rolSeleccionado}`,
+          label: `Contraseña del ${this.rolSeleccionado} *`,
           dato: "",
           type: "password",
         },
         {
-          label: `Telefono del ${this.rolSeleccionado}`,
+          label: `Telefono del ${this.rolSeleccionado} *`,
           dato: "",
           type: "text",
         },
