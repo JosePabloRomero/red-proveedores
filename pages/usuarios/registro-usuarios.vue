@@ -121,7 +121,7 @@ export default {
       formUsers: true,
       mensaje: "",
       snackbar: false,
-      rol: ["Proveedor", "Usuario"],
+      rol: ["Proveedor", "Cliente"],
       rolSeleccionado: null,
       camposGenerales: [],
       camposProveedor: [

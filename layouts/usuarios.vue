@@ -96,7 +96,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Red de proveedores - Usuarios',
+      title: 'Red de proveedores - Clientes',
       user: null
     }
   },

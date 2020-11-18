@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       formLogin: true,
-      rol: ["Usuario", "Proveedor", "Administrador"],
+      rol: ["Cliente", "Proveedor", "Administrador"],
       rolSeleccionado: null,
       email: null,
       clave: null,
