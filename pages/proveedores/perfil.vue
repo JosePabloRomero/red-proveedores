@@ -118,7 +118,7 @@
 </template>
 
 <script>
-const url = "http:///localhost:3002/api/v1/";
+const url = "http://localhost:3002/api/v1/";
 export default {
   layout: "proveedores",
   beforeMount() {

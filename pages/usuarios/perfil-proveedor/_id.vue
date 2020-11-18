@@ -112,9 +112,15 @@
           </v-expand-transition>
         </v-card>
       </v-row>
-      <v-row>
-        <v-col align="center">
-          <v-btn class="success black--text" @click="contactarProveedor">
+      <v-row justify="center">
+        <v-col sm="2">
+          <v-btn color="accent lighten-2"
+              outline @click="verCatalogo">
+            Ver catálogo
+          </v-btn>
+        </v-col>
+        <v-col sm="2">
+          <v-btn color="error lighten-2" outline @click="contactarProveedor">
             Contactar
           </v-btn>
         </v-col>
@@ -129,7 +135,7 @@
 </template>
 
 <script>
-const url = "http:///localhost:3002/api/v1/";
+const url = "http://localhost:3002/api/v1/";
 export default {
   layout: "usuarios",
   beforeMount() {
@@ -165,15 +171,24 @@ export default {
   },
   methods: {
     loadPage() {
+      this.validarParametro()
       this.cargarProveedor();
       this.cargarResena();
       this.imagenesCategorias();
     },
+    async validarParametro() {
+      if (this.$route.params.id) {
+        this.id = this.$route.params.id;
+        let { data } = await this.$axios.get(
+          url + "proveedor_especifico_id/" + this.$route.params.id
+        );
+      }
+    },
     async cargarProveedor() {
       let { data } = await this.$axios.get(
-        `${url}proveedor_especifico/?nombre=${this.nombreBuscado}&apellido=${this.apellidoBuscado}`
+        `${url}proveedor_especifico_id/${this.id}`
       );
-      this.id = data.info[0].id;
+      console.log(data.info)
       this.nombre = data.info[0].nombre;
       this.apellido = data.info[0].apellido;
       this.descripcion = data.info[0].descripcion;
@@ -186,7 +201,7 @@ export default {
     },
     async cargarResena() {
       let { data } = await this.$axios.get(
-        `${url}proveedor_especifico/?nombre=${this.nombreBuscado}&apellido=${this.apellidoBuscado}`
+        `${url}proveedor_especifico_id/${this.id}`
       );
       this.id = data.info[0].id;
       let promedio = await this.$axios.get(`${url}resenas_promedio/${this.id}`);
@@ -205,7 +220,7 @@ export default {
     },
     async imagenesCategorias() {
       let { data } = await this.$axios.get(
-        `${url}proveedor_especifico/?nombre=${this.nombreBuscado}&apellido=${this.apellidoBuscado}`
+        `${url}proveedor_especifico_id/${this.id}`
       );
       this.id = data.info[0].id;
       let categorias = await this.$axios.get(
@@ -236,7 +251,7 @@ export default {
     },
     async contactarProveedor() {
       let proveedor = await this.$axios.get(
-        `${url}proveedor_especifico/?nombre=${this.nombreBuscado}&apellido=${this.apellidoBuscado}`
+        `${url}proveedor_especifico_id/${this.id}`
       );
       this.id = proveedor.data.info[0].id;
       let token = localStorage.getItem("token");
@@ -258,6 +273,9 @@ export default {
         this.snackbar = true;
       });
     },
+    verCatalogo() {      
+      this.$router.push("/usuarios/catalogo/" + this.id);
+    } 
   },
 };
 </script>
