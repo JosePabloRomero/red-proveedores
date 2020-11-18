@@ -40,7 +40,7 @@
             v-if="index !== 2"
           ></v-text-field>
         </v-col>
-        <v-col md="4">
+        <v-col md="4" v-if="rolSeleccionado === rol[0]">
           <v-select
             label="Categorias *"
             :items="categorias"

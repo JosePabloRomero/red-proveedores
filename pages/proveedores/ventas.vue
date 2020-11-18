@@ -255,6 +255,13 @@ export default {
               this.mensaje = `La venta fue actualizada con exito`;
               this.snackbar = true;
             });
+            if(venta.id_estado === 2) {
+              let resena = {
+                id_venta : this.id_venta,
+                id_estado : 3
+              }
+              this.$axios.post(url + "resenas", resena);
+            }
         } else {
           this.mensaje = `La venta no existe en la tabla`;
           this.snackbar = true;
