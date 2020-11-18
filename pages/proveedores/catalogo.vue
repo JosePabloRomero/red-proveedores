@@ -1,6 +1,21 @@
 <template>
   <v-container>
-    <h1>Mi catálogo de productos</h1>
+    <v-row justify="center">
+      <v-col sm="12">
+        <h1>Mi catálogo de productos</h1>
+      </v-col>
+    </v-row>
+    <v-row justify="center" v-if="nuevoCatalogo">
+      <v-col sm="8">
+        <h3>
+          Parece que aún no tienes un catálogo...
+          <v-btn color="error lighten-2" text @click="crearCatalogo()">
+            Crear mi catálogo
+          </v-btn>
+        </h3>
+      </v-col>
+      
+    </v-row>
     <v-row>
       <v-col sm="4" v-for="(producto, index) in catalogo" :key="index">
         <v-card class="mx-auto" max-width="344" outlined>
@@ -51,22 +66,32 @@ const url = "http:///localhost:3002/api/v1/";
 export default {
   layout: "proveedores",
   beforeMount() {
-    this.cargarCatalogo();
+    this.comprobarCatalogo();
   },
   data() {
     return {
       catalogo: [],
       id_proveedor: null,
       foobar: null,
+      nuevoCatalogo: false,
     };
   },
   methods: {
-    async cargarCatalogo() {
-      this.catalogo = []
+    async comprobarCatalogo() {
       let token = localStorage.getItem("token");
       this.$axios.setToken(token, "Bearer");
       let proveedor = await this.$axios.get(url + "auth");
       this.id_proveedor = proveedor.data.info.id;
+      let {data} = await this.$axios.get(url + "catalogos/" + this.id_proveedor);
+      if(data.metainfo.total > 0){
+        this.nuevoCatalogo = false
+        await this.cargarCatalogo()
+      } else {
+        this.nuevoCatalogo = true
+      }
+    },
+    async cargarCatalogo() {
+      this.catalogo = [];      
       let { data } = await this.$axios.get(
         url + "productos_por_proveedor/" + this.id_proveedor
       );
@@ -80,6 +105,21 @@ export default {
         };
         this.catalogo.push(producto);
       }
+    },
+    async crearCatalogo() {
+      let catalogo = {
+        id_proveedor: this.id_proveedor
+      }
+      let { data } = await this.$axios.post(
+        url + "catalogos/",
+        catalogo
+      );
+      this.$swal.fire(
+        "Creado",
+         `El catálogo fue creado con exito. Serás redirigido al modulo de productos!`,
+          "success"
+      );
+      this.$router.push('/proveedores/registro-productos/');
     },
     async obtenerCategoriasProducto(id_producto) {
       let { data } = await this.$axios.get(
@@ -113,9 +153,9 @@ export default {
                   "El producto ha sido eliminado correctamente.!",
                   "success"
                 );
-              }); 
-              this.cargarCatalogo()           
-          }          
+              });
+            this.cargarCatalogo();
+          }
         });
     },
   },

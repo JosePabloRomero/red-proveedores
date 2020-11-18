@@ -118,7 +118,6 @@ export default {
           disabled: true,
           visible: false,
           required: false,
-          
         },
         {
           label: `Nombre del producto`,
@@ -126,7 +125,7 @@ export default {
           type: "text",
           disabled: false,
           visible: true,
-          required: true,          
+          required: true,
         },
         {
           label: `Precio del producto`,
@@ -134,7 +133,7 @@ export default {
           type: "number",
           disabled: false,
           visible: true,
-          required: true,          
+          required: true,
         },
       ],
       categorias: [],
@@ -169,18 +168,34 @@ export default {
       let { data } = await this.$axios.get(
         url + "productos_por_proveedor/" + this.id_proveedor
       );
-      this.id_catalogo = data.info[0].id_catalogo;     
-      for (let index = 0; index < data.info.length; index++) {
-        let producto = {
-          id: data.info[index].id,
-          nombre: data.info[index].nombre,
-          descripcion: data.info[index].descripcion,
-          precio: data.info[index].precio,
-          categorias: await this.obtenerCategoriasProductoString(
-            data.info[index].id
-          ),
-        };
-        this.productos.push(producto);
+      if (data.metainfo.total > 0) {
+        this.id_catalogo = data.info[0].id_catalogo;
+        for (let index = 0; index < data.info.length; index++) {
+          let producto = {
+            id: data.info[index].id,
+            nombre: data.info[index].nombre,
+            descripcion: data.info[index].descripcion,
+            precio: data.info[index].precio,
+            categorias: await this.obtenerCategoriasProductoString(
+              data.info[index].id
+            ),
+          };
+          this.productos.push(producto);
+        }
+      } else {
+        let {data} = await this.$axios.get(
+          url + "catalogos/" + this.id_proveedor
+        );        
+        if (data.metainfo.total > 0) {
+           this.id_catalogo =  data.info[0].id_catalogo
+        } else {
+          this.$swal.fire(
+                "Alerta",
+                "Aun no cuentas con un catálogo creado. Redireccionando al modulo de catálogos",
+                "success"
+          );
+          this.$router.push('/proveedores/catalogo')
+        }
       }
     },
     async obtenerCategoriasProductoString(id_producto) {
@@ -208,7 +223,7 @@ export default {
       this.camposGenerales[0].visible = true;
       this.camposGenerales[1].dato = product.nombre;
       this.camposGenerales[2].dato = product.precio;
-      this.descripcion = product.descripcion;           
+      this.descripcion = product.descripcion;
       this.obtenerCategoriasProducto(product.id);
       this.editing = true;
       this.camposGenerales[0].disabled = true;
@@ -287,7 +302,7 @@ export default {
             id_catalogo: this.id_catalogo,
             descripcion: this.descripcion,
           };
-          console.log(product)
+          console.log(product);
           this.$axios
             .put(url + "productos/" + this.camposGenerales[0].dato, product)
             .then((response) => {
@@ -359,9 +374,7 @@ export default {
       }
     },
     deleteProduct(producto) {
-      let existIndex = this.productos.findIndex(
-        (x) => x.id == producto.id
-      );
+      let existIndex = this.productos.findIndex((x) => x.id == producto.id);
       if (existIndex > -1) {
         this.$swal
           .fire({
@@ -378,17 +391,17 @@ export default {
             if (result.isConfirmed) {
               this.$axios
                 .delete(url + "productos/" + producto.id)
-                .then((response) => {                  
+                .then((response) => {
                   this.$swal.fire(
                     "Eliminado.",
                     "El producto ha sido eliminado correctamente.!",
                     "success"
                   );
-                })                
-                this.limpiarCampos();
-                this.cargarProductos();
+                });
+              this.limpiarCampos();
+              this.cargarProductos();
             }
-          });        
+          });
       } else {
         this.$swal.fire({
           icon: "error",
@@ -397,6 +410,6 @@ export default {
         });
       }
     },
-  }
+  },
 };
 </script>
