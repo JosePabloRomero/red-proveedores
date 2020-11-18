@@ -114,13 +114,12 @@
       </v-row>
       <v-row justify="center">
         <v-col sm="2">
-          <v-btn color="accent lighten-2"
-              outline @click="verCatalogo">
+          <v-btn color="accent lighten-2" block @click="verCatalogo">
             Ver catálogo
           </v-btn>
         </v-col>
         <v-col sm="2">
-          <v-btn color="error lighten-2" outline @click="contactarProveedor">
+          <v-btn color="error lighten-2" block @click="contactarProveedor">
             Contactar
           </v-btn>
         </v-col>
@@ -171,7 +170,7 @@ export default {
   },
   methods: {
     loadPage() {
-      this.validarParametro()
+      this.validarParametro();
       this.cargarProveedor();
       this.cargarResena();
       this.imagenesCategorias();
@@ -188,7 +187,7 @@ export default {
       let { data } = await this.$axios.get(
         `${url}proveedor_especifico_id/${this.id}`
       );
-      console.log(data.info)
+      console.log(data.info);
       this.nombre = data.info[0].nombre;
       this.apellido = data.info[0].apellido;
       this.descripcion = data.info[0].descripcion;
@@ -226,28 +225,29 @@ export default {
       let categorias = await this.$axios.get(
         url + "categorias_proveedor/" + this.id
       );
-      this.nombreCategoria = categorias.data.info.nombre;
-      if ((this.nombreCategoria = "Lácteos")) {
-        let imagenes = {
-          src:
-            "https://cdn.pixabay.com/photo/2016/05/11/11/20/milk-1385548_960_720.jpg",
-        };
-        this.items.push(imagenes);
-      }
-      if ((this.nombreCategoria = "Insumos Agrícolas")) {
-        let imagenes = {
-          src:
-            "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-        };
-        this.items.push(imagenes);
-      }
-      if ((this.nombreCategoria = "Ferretería")) {
-        let imagenes = {
-          src:
-            "https://cdn.pixabay.com/photo/2019/04/15/07/12/tools-4128591_960_720.jpg",
-        };
-        this.items.push(imagenes);
-      }
+      categorias.data.info.forEach((element) => {        
+        let imagen = {};
+        switch (element.id_categoria) {
+          case 3:
+            imagen.src =
+              "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
+            break;
+          case 4:
+            imagen.src =
+              "https://cdn.pixabay.com/photo/2016/05/11/11/20/milk-1385548_960_720.jpg";
+            break;
+          case 5:
+            imagen.src =
+              "https://cdn.pixabay.com/photo/2019/04/15/07/12/tools-4128591_960_720.jpg";
+            break;
+
+          default:
+            imagen.src =
+              "https://cdn.pixabay.com/photo/2017/06/08/17/32/not-found-2384304_960_720.jpg";
+            break;
+        }       
+        this.items.push(imagen);
+      });
     },
     async contactarProveedor() {
       let proveedor = await this.$axios.get(
@@ -273,9 +273,9 @@ export default {
         this.snackbar = true;
       });
     },
-    verCatalogo() {      
+    verCatalogo() {
       this.$router.push("/usuarios/catalogo/" + this.id);
-    } 
+    },
   },
 };
 </script>

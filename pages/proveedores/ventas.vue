@@ -15,6 +15,7 @@
             v-model="nombre_cliente"
             :rules="fieldRequired"
             type="text"
+            disabled
             required
           ></v-text-field>
         </v-col>
@@ -24,11 +25,17 @@
             v-model="apellido_cliente"
             :rules="fieldRequired"
             type="text"
+            disabled
             required
           ></v-text-field>
         </v-col>
-        <v-col sm="4" v-if="editing">         
-          <v-date-picker v-model="fecha_venta" :rules="fieldRequired"></v-date-picker>
+      </v-row>
+      <v-row>
+        <v-col sm="4" v-if="editing">
+          <v-date-picker
+            v-model="fecha_venta"
+            :rules="fieldRequired"
+          ></v-date-picker>
         </v-col>
         <v-col md="6" v-if="editing">
           <v-select
@@ -44,7 +51,7 @@
       </v-row>
       <v-row justify="center">
         <v-col md="4">
-          <v-btn color="succes" @click="editarVenta" v-if="editing" block
+          <v-btn color="accent" @click="editarVenta" v-if="editing" block
             >Editar
           </v-btn>
         </v-col>
@@ -102,9 +109,9 @@ export default {
       formVentas: true,
       headers: [
         { text: "Id de la Venta", value: "id_venta" },
-        { text: "Nombre Del Cliente", value: "nombre_cliente" },
+        { text: "Nombre Del CLiente", value: "nombre_cliente" },
         { text: "Apellido Del Cliente", value: "apellido_cliente" },
-        { text: "Fecha", value: "fecha_venta"},
+        { text: "Fecha", value: "fecha_venta" },
         { text: "Estado", value: "estado" },
         { text: "Acciones", value: "actions" },
       ],
@@ -145,14 +152,37 @@ export default {
     async cargarVentas() {
       let token = localStorage.getItem("token");
       this.$axios.setToken(token, "Bearer");
-      let proveedor = await this.$axios.get(url + "auth");      
+      let proveedor = await this.$axios.get(url + "auth");
       this.id_proveedor = proveedor.data.info.id;
+      this.ventas = [];
+      this.ventas_en_cola = [];
       let { data } = await this.$axios.get(url + "ventas/" + this.id_proveedor);
-      this.ventas = data.info;
+      await this.formatearFecha(data.info, 1);
       let ventas_en_cola = await this.$axios.get(
         url + "ventas_en_cola/" + this.id_proveedor
       );
-      this.ventas_en_cola = ventas_en_cola.data.info;
+      await this.formatearFecha(ventas_en_cola.data.info, 2);
+    },
+    formatearFecha(ventas, tipo) {
+      ventas.forEach((element) => {
+        let fecha = element.fecha_venta.split("T", 1);
+        let venta = {
+          apellido_cliente: element.apellido_cliente,
+          estado: element.estado,
+          id_estado: element.id_estado,
+          nombre_cliente: element.nombre_cliente,
+          id_usuario: element.id_usuario,
+          id_venta: element.id_venta,
+          fecha_venta: fecha[0],
+        };
+        //en proceso o finalizada
+        if (tipo === 1) {
+          this.ventas.push(venta);
+          //En cola
+        } else if (tipo === 2) {
+          this.ventas_en_cola.push(venta);
+        }
+      });
     },
     limpiarCampos() {
       this.estadoSeleccionado = "";
@@ -167,7 +197,7 @@ export default {
       this.estado = venta.estado;
       this.nombre_cliente = venta.nombre_cliente;
       this.apellido_cliente = venta.apellido_cliente;
-      this.fecha_venta =  venta.fecha_venta;
+      this.fecha_venta = venta.fecha_venta;
       this.id_estado = venta.id_estado;
       this.id_usuario = venta.id_usuario;
       this.editing = true;
@@ -250,7 +280,7 @@ export default {
           .then((result) => {
             if (result.isConfirmed) {
               this.$axios
-                .delete(url + "ventas/" + venta.id)
+                .delete(url + "ventas/" + venta.id_venta)
                 .then((response) => {
                   this.$swal.fire(
                     "Eliminado.",
@@ -295,7 +325,7 @@ export default {
           .then((result) => {
             if (result.isConfirmed) {
               this.$axios
-                .delete(url + "ventas/" + venta.id)
+                .delete(url + "ventas/" + venta.id_venta)
                 .then((response) => {
                   this.$swal.fire(
                     "Eliminado.",

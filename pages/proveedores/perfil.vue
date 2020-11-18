@@ -10,7 +10,9 @@
       <v-row>
         <v-col>
           <v-card class="mx-auto" max-width="650">
-            <v-card-title class="justify-center success">{{ nombre }} {{ apellido }}</v-card-title>
+            <v-card-title class="justify-center success"
+              >{{ nombre }} {{ apellido }}</v-card-title
+            >
             <v-img>
               <v-carousel>
                 <v-carousel-item
@@ -59,7 +61,7 @@
           <v-card-text>
             <v-row align="center" class="mx-0">
               <v-rating
-                :value= "rating"
+                :value="rating"
                 color="amber"
                 dense
                 half-increments
@@ -97,7 +99,9 @@
                   >
                     <div>
                       <div class="font-weight-normal">
-                        <strong>{{ message.from }} {{message.lastname}}</strong>
+                        <strong
+                          >{{ message.from }} {{ message.lastname }}</strong
+                        >
                       </div>
                       <div>{{ message.message }}</div>
                     </div>
@@ -180,7 +184,7 @@ export default {
           message: element.comentario,
           color: "red accent-1",
         };
-        this.messages.push(mensaje)
+        this.messages.push(mensaje);
       });
     },
     async imagenesCategorias() {
@@ -189,27 +193,29 @@ export default {
       let id = await this.$axios.get(url + "auth");
       this.id = id.data.info.id;
       let categorias = await this.$axios.get(
-        url + "categorias_proveedor/" + this.id);
-      this.nombreCategoria = categorias.data.info.nombre;
-      if (this.nombreCategoria = "Lácteos") {
-        let imagenes = {
-          src: "https://cdn.pixabay.com/photo/2016/05/11/11/20/milk-1385548_960_720.jpg"
-        }
-        this.items.push(imagenes)
-      }
-      if (this.nombreCategoria = "Insumos Agrícolas") {
-        let imagenes = {
-          src: "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-        }
-        this.items.push(imagenes)
-      }
-      if (this.nombreCategoria = "Ferretería") {
-        let imagenes = {
-          src: "https://cdn.pixabay.com/photo/2019/04/15/07/12/tools-4128591_960_720.jpg"
-        }
-        this.items.push(imagenes)
-      }
-    }
+        url + "categorias_proveedor/" + this.id
+      );
+      categorias.data.info.forEach((element) => {
+        console.log(element)
+        let imagen = {};
+        switch (element.id_categoria) {
+          case 3:
+            imagen.src = "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+            break;
+          case 4:
+            imagen.src = "https://cdn.pixabay.com/photo/2016/05/11/11/20/milk-1385548_960_720.jpg"
+            break;
+          case 5:
+            imagen.src = "https://cdn.pixabay.com/photo/2019/04/15/07/12/tools-4128591_960_720.jpg"
+            break;
+        
+          default:
+            imagen.src = "https://cdn.pixabay.com/photo/2017/06/08/17/32/not-found-2384304_960_720.jpg"
+            break;
+        }       
+        this.items.push(imagen);          
+      });
+    },
   },
 };
 </script>
