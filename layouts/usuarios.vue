@@ -54,35 +54,12 @@
         {{user.nombre}} {{user.apellido}}
       </span>  
       <v-btn color="accent" to="/">Salir</v-btn>
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
     </v-app-bar>
     <v-main>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
     <v-footer
       :absolute="!fixed"
       app
@@ -111,10 +88,10 @@ export default {
           to: '/usuarios/buscar-proveedores'
         },
         {
-          title: 'Reseñas',
-          to: '/usuarios/resenas-usuarios'
-        }
-        
+          icon: 'mdi-account-clock',
+          title: 'Reseñas pendientes',
+          to: '/usuarios/resenas-pendientes'
+        },
       ],
       miniVariant: false,
       right: true,

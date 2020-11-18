@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>Bienvenido al modulo de proveedores</h1>
+    <h1>Bienvenido al módulo de proveedores</h1>
   </v-container>
 </template>
 <script>

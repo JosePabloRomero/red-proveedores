@@ -43,7 +43,7 @@
 
           <v-card-text class="text--primary mt-0">
             <div>
-              ¿Aun no tienes una cuenta?
+              ¿Aún no tienes una cuenta?
               <v-btn color="accent" to="/usuarios/registro-usuarios" text>
                 Registrate
               </v-btn>
