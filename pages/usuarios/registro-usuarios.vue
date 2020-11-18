@@ -22,7 +22,7 @@
 
       <!-- Formularios generales para proveedor y usuario -->
       <v-row v-if="rolSeleccionado">
-        <v-col sm="4" v-for="(item, index) in camposGenerales" :key="index">
+        <v-col md="4" v-for="(item, index) in camposGenerales" :key="index">
           <v-text-field
             :label="item.label"
             v-model="item.dato"
@@ -39,6 +39,20 @@
             required
             v-if="index !== 2"
           ></v-text-field>
+        </v-col>
+        <v-col md="4">
+          <v-select
+            label="Categorias *"
+            :items="categorias"
+            :menu-props="{ maxHeight: '400' }"
+            item-value="id"
+            item-text="nombre"
+            v-model="categorias_seleccionadas"
+            multiple
+            required
+            hint="Seleccione las categorías a las que pertenece"
+            persistent-hint
+          ></v-select>
         </v-col>
       </v-row>
 
@@ -81,7 +95,9 @@
       </v-row>
       <v-row justify="center" v-if="rolSeleccionado">
         <v-col md="4">
-          <v-btn class="success black--text" @click="enviar" block>Enviar </v-btn>
+          <v-btn class="success black--text" @click="enviar" block
+            >Enviar
+          </v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -94,6 +110,7 @@
 </template>
 
 <script>
+const url = "http://localhost:3002/api/v1/";
 export default {
   layout: "default",
   beforeMount() {
@@ -114,18 +131,38 @@ export default {
       descripcion: null,
       tipo_identificaciones: [],
       tipoId_seleccionado: null,
+      categorias: [],
+      categorias_seleccionadas: null,
       /* Comprobar Campos */
       fieldRequired: [(v) => !!v || "Este campo es requerido"],
       emailRules: [
         (v) => !!v || "El e-mail es requerido",
         (v) => /.+@.+/.test(v) || "El e-mail debe de ser valido",
       ],
-      url: "http://localhost:3002/api/v1/",
     };
   },
   methods: {
     loadPage() {
       this.obtenerIdentificaciones();
+      this.obtenerCategorias();
+    },
+    async obtenerCategorias() {
+      let { data } = await this.$axios.get(url + "categorias/");
+      this.categorias = data.info;
+    },
+    async agregarCategoriasProveedor(id_proveedor) {
+      for (
+        let index = 0;
+        index < this.categorias_seleccionadas.length;
+        index++
+      ) {
+        let categoria_proveedor = {
+          id_categoria: this.categorias_seleccionadas[index],
+          id_proveedor: id_proveedor
+        };
+        console.log(categoria_proveedor)
+        this.$axios.post(url + "categorias_proveedores", categoria_proveedor);
+      }
     },
     actualizarRol() {
       this.camposGenerales = [
@@ -157,7 +194,7 @@ export default {
       ];
     },
     async obtenerIdentificaciones() {
-      let { data } = await this.$axios.get(this.url + "identificaciones");
+      let { data } = await this.$axios.get(url + "identificaciones");
       this.tipo_identificaciones = data.info;
     },
     async enviar() {
@@ -180,12 +217,10 @@ export default {
               descripcion: this.descripcion,
             };
             console.log(user);
-            let { data } = await this.$axios.post(
-              this.url + "proveedores",
-              user
-            );
+            let { data } = await this.$axios.post(url + "proveedores", user);            
+            this.agregarCategoriasProveedor(data.info[0].id)
           } else {
-            let { data } = await this.$axios.post(this.url + "usuarios", user);
+            let { data } = await this.$axios.post(url + "usuarios", user);
           }
           this.$swal.fire(
             "Creado",
