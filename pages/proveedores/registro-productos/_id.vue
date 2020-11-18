@@ -118,6 +118,7 @@ export default {
           disabled: true,
           visible: false,
           required: false,
+          
         },
         {
           label: `Nombre del producto`,
@@ -125,15 +126,15 @@ export default {
           type: "text",
           disabled: false,
           visible: true,
-          required: true,
+          required: true,          
         },
         {
           label: `Precio del producto`,
           dato: "",
-          type: "text",
+          type: "number",
           disabled: false,
           visible: true,
-          required: true,
+          required: true,          
         },
       ],
       categorias: [],
@@ -168,7 +169,7 @@ export default {
       let { data } = await this.$axios.get(
         url + "productos_por_proveedor/" + this.id_proveedor
       );
-      this.id_catalogo = data.info[0].id_catalogo;
+      this.id_catalogo = data.info[0].id_catalogo;     
       for (let index = 0; index < data.info.length; index++) {
         let producto = {
           id: data.info[index].id,
@@ -207,8 +208,7 @@ export default {
       this.camposGenerales[0].visible = true;
       this.camposGenerales[1].dato = product.nombre;
       this.camposGenerales[2].dato = product.precio;
-      this.descripcion = product.descripcion;
-      this.id_catalogo = product.id_catalogo;
+      this.descripcion = product.descripcion;           
       this.obtenerCategoriasProducto(product.id);
       this.editing = true;
       this.camposGenerales[0].disabled = true;
@@ -287,13 +287,14 @@ export default {
             id_catalogo: this.id_catalogo,
             descripcion: this.descripcion,
           };
+          console.log(product)
           this.$axios
             .put(url + "productos/" + this.camposGenerales[0].dato, product)
             .then((response) => {
               this.editing = false;
               this.$swal.fire(
                 "Modificado.",
-                "El producto ha sido modificada correctamente.!",
+                "El producto ha sido modificado correctamente.!",
                 "success"
               );
             })
@@ -301,7 +302,7 @@ export default {
               this.$swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Error al agregar el producto",
+                text: "Error al modificar el producto",
               });
               console.log(error);
             });
@@ -336,12 +337,12 @@ export default {
           descripcion: this.descripcion,
           id_catalogo: this.id_catalogo,
         };
-        let { data } = await this.$axios.post(url + "productos", product);    
-        await this.agregarCategoriasNuevas((data.info[0].id));
+        let { data } = await this.$axios.post(url + "productos", product);
+        await this.agregarCategoriasNuevas(data.info[0].id);
         this.limpiarCampos();
         this.cargarProductos();
         this.mensaje = `El producto fue registrado con éxito`;
-        this.snackbar = true; 
+        this.snackbar = true;
       }
     },
     agregarCategoriasNuevas(id_producto) {
@@ -358,32 +359,36 @@ export default {
       }
     },
     deleteProduct(producto) {
-      let existIndex = this.productos.findIndex((x) => x.id == producto.id);
+      let existIndex = this.productos.findIndex(
+        (x) => x.id == producto.id
+      );
       if (existIndex > -1) {
         this.$swal
           .fire({
             title: "Desea eliminar el producto?",
             text: "Este cambio no se puede revertir.",
-            type: "warning",
+            icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Si, eliminar",
+            confirmButtonText: "Si, eliminalo!",
             cancelButtonText: "Cancelar",
           })
           .then((result) => {
-            if (result.value) {
-              let url = "http://localhost:3002/productos/" + producto.id;
-              this.$axios.delete(url).then((response) => {
-                this.$swal.fire(
-                  "Eliminado.",
-                  "El producto ha sido eliminada correctamente.!",
-                  "success"
-                );
+            if (result.isConfirmed) {
+              this.$axios
+                .delete(url + "productos/" + producto.id)
+                .then((response) => {                  
+                  this.$swal.fire(
+                    "Eliminado.",
+                    "El producto ha sido eliminado correctamente.!",
+                    "success"
+                  );
+                })                
+                this.limpiarCampos();
                 this.cargarProductos();
-              });
             }
-          });
+          });        
       } else {
         this.$swal.fire({
           icon: "error",
@@ -392,6 +397,6 @@ export default {
         });
       }
     },
-  },
+  }
 };
 </script>
