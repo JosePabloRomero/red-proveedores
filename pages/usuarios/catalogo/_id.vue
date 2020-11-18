@@ -51,10 +51,7 @@ export default {
   methods: {
     async validarParametro() {
       if (this.$route.params.id) {
-        this.id_proveedor = this.$route.params.id;
-        let { data } = await this.$axios.get(
-          url + "catalogo_proveedor/" + this.$route.params.id
-        );
+        this.id_proveedor = this.$route.params.id;        
       }
     },
     async infoProveedor() {

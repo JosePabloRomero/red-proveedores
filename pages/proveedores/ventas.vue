@@ -167,7 +167,7 @@ export default {
       this.estado = venta.estado;
       this.nombre_cliente = venta.nombre_cliente;
       this.apellido_cliente = venta.apellido_cliente;
-      this.fecha_venta =  venta.fecha_venta | moment("dddd, MMMM Do YYYY");
+      this.fecha_venta =  venta.fecha_venta;
       this.id_estado = venta.id_estado;
       this.id_usuario = venta.id_usuario;
       this.editing = true;
