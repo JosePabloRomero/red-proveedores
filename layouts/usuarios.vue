@@ -111,10 +111,10 @@ export default {
           to: '/usuarios/buscar-proveedores'
         },
         {
-          title: 'Reseñas',
-          to: '/usuarios/resenas-usuarios'
-        }
-        
+          icon: 'mdi-account-clock',
+          title: 'Reseñas pendientes',
+          to: '/usuarios/resenas-pendientes'
+        },
       ],
       miniVariant: false,
       right: true,
