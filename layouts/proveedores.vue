@@ -111,8 +111,13 @@ export default {
           to: '/proveedores/ventas'
         },        
         {
+          icon: 'mdi-clipboard-list-outline',
+          title: 'Mi catálogo',
+          to: '/proveedores/catalogo'
+        },        
+        {
           icon: 'mdi-store-outline',
-          title: 'Agregar Productos',
+          title: 'Control de productos',
           to: '/proveedores/registro-productos'
         },   
         {
