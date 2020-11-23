@@ -219,15 +219,15 @@ export default {
         };
         this.$axios
           .put(url + "ventas/" + venta.id_venta, venta_en_cola)
-          .then((response) => {
-            this.editing = false;
-            await this.cargarVentas();
+          .then((response) => {            
             this.$swal.fire({
               icon: "info",
               title: "Atención",
               text: "La venta ahora se encuentra en proceso",
             });
           });
+          this.editing = false;
+          await this.cargarVentas();
       } else {
         this.$swal.fire({
           icon: "error",
@@ -236,7 +236,7 @@ export default {
         });
       }
     },
-    editarVenta() {
+    async editarVenta() {
       if (this.$refs.formVentas.validate() && this.formVentas) {
         let existIndex = this.ventas.findIndex(
           (x) => x.id_venta == this.id_venta
@@ -256,14 +256,13 @@ export default {
             .put(url + "ventas/" + this.id_venta, venta)
             .then((response) => {
               this.editing = false;
-              this.limpiarCampos();
-              await this.cargarVentas();
+              this.limpiarCampos();              
               this.$swal.fire({
                 icon: "success",
                 title: "Atención",
                 text: "La venta fue actualizada con éxito",
               });
-            });
+            });          
           if (venta.id_estado === 2) {
             let resena = {
               id_venta: this.id_venta,
@@ -271,6 +270,7 @@ export default {
             };
             this.$axios.post(url + "resenas", resena);
           }
+          await this.cargarVentas();
         } else {
           this.$swal.fire({
             icon: "error",
@@ -280,7 +280,7 @@ export default {
         }
       }
     },
-    eliminarVentaEnCola(venta) {
+    async eliminarVentaEnCola(venta) {
       let existIndex = this.ventas_en_cola.findIndex(
         (x) => x.id_venta == venta.id_venta
       );
@@ -305,8 +305,7 @@ export default {
                     "Eliminado.",
                     "La venta ha sido eliminada correctamente.",
                     "success"
-                  );
-                  await this.cargarVentas();
+                  );                  
                 })
                 .catch((error) => {
                   this.$swal.fire({
@@ -314,7 +313,7 @@ export default {
                     title: "Oops...",
                     text: "Error eliminando la venta",
                   });
-                });
+                });                
             }
           });
       } else {
@@ -324,8 +323,9 @@ export default {
           text: "La venta no existe en la tabla.",
         });
       }
+      await this.cargarVentas();
     },
-    eliminarVenta(venta) {
+    async eliminarVenta(venta) {
       let existIndex = this.ventas.findIndex(
         (x) => x.id_venta == venta.id_venta
       );
@@ -350,8 +350,7 @@ export default {
                     "Eliminado.",
                     "La venta ha sido eliminada correctamente.",
                     "success"
-                  );
-                  await this.cargarVentas();
+                  );                  
                 })
                 .catch((error) => {
                   this.$swal.fire({
@@ -369,6 +368,7 @@ export default {
           text: "La venta no existe en la tabla.",
         });
       }
+      await this.cargarVentas();
     },
   },
 };

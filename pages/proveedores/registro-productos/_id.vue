@@ -376,7 +376,7 @@ export default {
         this.$axios.post(url + "categorias_productos", categoriaNueva);
       }
     },
-    deleteProduct(producto) {
+    async deleteProduct(producto) {
       let existIndex = this.productos.findIndex((x) => x.id == producto.id);
       if (existIndex > -1) {
         this.$swal
@@ -402,7 +402,7 @@ export default {
                   );
                 });
               this.limpiarCampos();
-              await this.cargarProductos();
+              this.cargarProductos();
             }
           });
       } else {
