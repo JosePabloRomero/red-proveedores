@@ -183,18 +183,18 @@ export default {
           this.productos.push(producto);
         }
       } else {
-        let {data} = await this.$axios.get(
+        let { data } = await this.$axios.get(
           url + "catalogos/" + this.id_proveedor
-        );        
+        );
         if (data.metainfo.total > 0) {
-           this.id_catalogo =  data.info[0].id_catalogo
+          this.id_catalogo = data.info[0].id_catalogo;
         } else {
           this.$swal.fire(
-                "Alerta",
-                "Aun no cuentas con un catálogo creado. Redireccionando al modulo de catálogos",
-                "success"
+            "Alerta",
+            "Aun no cuentas con un catálogo creado. Redireccionando al modulo de catálogos",
+            "success"
           );
-          this.$router.push('/proveedores/catalogo')
+          this.$router.push("/proveedores/catalogo");
         }
       }
     },
@@ -356,8 +356,11 @@ export default {
         await this.agregarCategoriasNuevas(data.info[0].id);
         this.limpiarCampos();
         this.cargarProductos();
-        this.mensaje = `El producto fue registrado con éxito`;
-        this.snackbar = true;
+        this.$swal.fire({
+          icon: "success",
+          title: "Atención",
+          text: "El producto fue registrado con éxito",
+        });
       }
     },
     agregarCategoriasNuevas(id_producto) {

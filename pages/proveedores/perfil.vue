@@ -197,22 +197,7 @@ export default {
       );
       categorias.data.info.forEach((element) => {
         console.log(element)
-        let imagen = {};
-        switch (element.id_categoria) {
-          case 3:
-            imagen.src = "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-            break;
-          case 4:
-            imagen.src = "https://cdn.pixabay.com/photo/2016/05/11/11/20/milk-1385548_960_720.jpg"
-            break;
-          case 5:
-            imagen.src = "https://cdn.pixabay.com/photo/2019/04/15/07/12/tools-4128591_960_720.jpg"
-            break;
-        
-          default:
-            imagen.src = "https://cdn.pixabay.com/photo/2017/06/08/17/32/not-found-2384304_960_720.jpg"
-            break;
-        }       
+        let imagen = {src: element.ruta_img};
         this.items.push(imagen);          
       });
     },

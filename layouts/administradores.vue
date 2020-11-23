@@ -86,7 +86,12 @@ export default {
           icon: 'mdi-account-edit-outline',
           title: 'CRUD Usuarios',
           to: '/administradores/registro-usuarios'
-        }        
+        },     
+        {
+          icon: 'mdi-tag-plus',
+          title: 'Agregar categorías',
+          to: '/administradores/agregar-categoria'
+        }    
       ],
       miniVariant: false,
       right: true,

@@ -222,12 +222,18 @@ export default {
           .then((response) => {
             this.editing = false;
             this.cargarVentas();
-            this.mensaje = `La venta ahora se encuentra en proceso`;
-            this.snackbar = true;
+            this.$swal.fire({
+              icon: "info",
+              title: "Atención",
+              text: "La venta ahora se encuentra en proceso",
+            });
           });
       } else {
-        this.mensaje = `La venta en cola no existe en la tabla`;
-        this.snackbar = true;
+        this.$swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "La venta en cola no existe en la tabla",
+        });
       }
     },
     editarVenta() {
@@ -252,19 +258,25 @@ export default {
               this.editing = false;
               this.limpiarCampos();
               this.cargarVentas();
-              this.mensaje = `La venta fue actualizada con exito`;
-              this.snackbar = true;
+              this.$swal.fire({
+                icon: "success",
+                title: "Atención",
+                text: "La venta fue actualizada con éxito",
+              });
             });
-            if(venta.id_estado === 2) {
-              let resena = {
-                id_venta : this.id_venta,
-                id_estado : 3
-              }
-              this.$axios.post(url + "resenas", resena);
-            }
+          if (venta.id_estado === 2) {
+            let resena = {
+              id_venta: this.id_venta,
+              id_estado: 3,
+            };
+            this.$axios.post(url + "resenas", resena);
+          }
         } else {
-          this.mensaje = `La venta no existe en la tabla`;
-          this.snackbar = true;
+          this.$swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "La venta en cola no existe en la tabla",
+          });
         }
       }
     },

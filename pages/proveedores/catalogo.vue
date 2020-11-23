@@ -116,7 +116,7 @@ export default {
       );
       this.$swal.fire(
         "Creado",
-         `El catálogo fue creado con exito. Serás redirigido al modulo de productos!`,
+         `El catálogo fue creado con exito. Serás redirigido al módulo de productos!`,
           "success"
       );
       this.$router.push('/proveedores/registro-productos/');

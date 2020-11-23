@@ -93,8 +93,11 @@ export default {
         console.log(this.idResena)
         let { data } = await this.$axios.put(url + "resenas/" + this.idResena, resenas);
         let estado = await this.$axios.put(url + "update_estado_resena/" + this.idResena);
-        this.mensaje = `La reseña fue registrada con éxito`;
-        this.snackbar = true;
+        this.$swal.fire({
+          icon: "success",
+          title: "Atención",
+          text: "La reseña fue registrada con éxito",
+        });
         this.$router.push("/usuarios/resenas-pendientes/")
       }
     },
