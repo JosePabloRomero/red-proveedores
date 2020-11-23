@@ -9,7 +9,7 @@
     <v-form v-model="formResenas" ref="formResenas" lazy-validation>
       <v-row>
         <v-card class="mx-auto mt-4" width="700" outlined>
-          <v-card-title class="justify-center success">Proveedor:</v-card-title>
+          <v-card-title class="justify-center success">Proveedor</v-card-title>
         </v-card>
       </v-row>
       <v-row class="mt-5">
