@@ -95,7 +95,7 @@ export default {
   layout: "proveedores",
   async beforeMount() {
     this.validarParametro();
-    this.cargarProductos();
+    await this.cargarProductos();
     await this.cargarCategorias();
   },
   data() {
@@ -324,7 +324,7 @@ export default {
 
           await this.agregarCategorias(this.camposGenerales[0].dato);
           this.limpiarCampos();
-          this.cargarProductos();
+          await this.cargarProductos();
         } else {
           this.$swal.fire({
             icon: "error",
@@ -355,7 +355,7 @@ export default {
         let { data } = await this.$axios.post(url + "productos", product);
         await this.agregarCategoriasNuevas(data.info[0].id);
         this.limpiarCampos();
-        this.cargarProductos();
+        await this.cargarProductos();
         this.$swal.fire({
           icon: "success",
           title: "Atención",
@@ -402,7 +402,7 @@ export default {
                   );
                 });
               this.limpiarCampos();
-              this.cargarProductos();
+              await this.cargarProductos();
             }
           });
       } else {

@@ -95,9 +95,9 @@
 const url = "http:///localhost:3002/api/v1/";
 export default {
   layout: "proveedores",
-  beforeMount() {
-    this.cargarVentas();
-    this.obtenerEstados();
+  async beforeMount() {
+    await this.cargarVentas();
+    await this.obtenerEstados();
   },
   beforeUpdate() {
     try {
@@ -109,7 +109,7 @@ export default {
       formVentas: true,
       headers: [
         { text: "Id de la Venta", value: "id_venta" },
-        { text: "Nombre Del CLiente", value: "nombre_cliente" },
+        { text: "Nombre Del Cliente", value: "nombre_cliente" },
         { text: "Apellido Del Cliente", value: "apellido_cliente" },
         { text: "Fecha", value: "fecha_venta" },
         { text: "Estado", value: "estado" },
@@ -221,7 +221,7 @@ export default {
           .put(url + "ventas/" + venta.id_venta, venta_en_cola)
           .then((response) => {
             this.editing = false;
-            this.cargarVentas();
+            await this.cargarVentas();
             this.$swal.fire({
               icon: "info",
               title: "Atención",
@@ -257,7 +257,7 @@ export default {
             .then((response) => {
               this.editing = false;
               this.limpiarCampos();
-              this.cargarVentas();
+              await this.cargarVentas();
               this.$swal.fire({
                 icon: "success",
                 title: "Atención",
@@ -306,7 +306,7 @@ export default {
                     "La venta ha sido eliminada correctamente.",
                     "success"
                   );
-                  this.cargarVentas();
+                  await this.cargarVentas();
                 })
                 .catch((error) => {
                   this.$swal.fire({
@@ -351,7 +351,7 @@ export default {
                     "La venta ha sido eliminada correctamente.",
                     "success"
                   );
-                  this.cargarVentas();
+                  await this.cargarVentas();
                 })
                 .catch((error) => {
                   this.$swal.fire({
